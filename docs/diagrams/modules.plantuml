@@ -1,0 +1,73 @@
+@startuml modules
+
+package modules{
+
+    interface SupportsSelfSupervision{
+        torch.nn.Module model
+        int every_n_epochs
+        SupportsConfidenceEstimation confidence_estimator
+        SupportsDistributionAnalysis distr_analyzer
+        torch.Tensor score(torch.Tensor batch)
+    }
+
+    abstract class L.LightningModule{
+        {abstract} configure_optimizers()
+        torch.Tensor {abstract} forward(torch.Tensor i)
+        {abstract} training_step(batch, batch_idx)
+        {abstract} test_step(batch, batch_idx)
+        {abstract} configure_callbacks()
+    }
+
+    abstract class L.Callback{
+        {abstract} on_train_epoch_end(trainer, pl_module)
+        {abstract} on_train_epoch_start(trainer, pl_module)
+        {abstract} on_fit_start(trainer, pl_module)
+    }
+
+    class SelfSupervisionCallback{
+        on_fit_start(trainer, pl_module)
+        on_train_epoch_start(trainer, pl_module)
+        on_train_epoch_end(trainer, pl_module)
+    }
+    class SelfSupervisionCallback extends L.Callback
+
+    abstract class SelfSupervisionModule{
+        torch.nn.Module model
+        int every_n_epochs
+        SupportsConfidenceEstimation confidence_estimator
+        SupportsDistributionAnalysis distr_analyzer
+        str threshold_strategy
+        float manual_threshold
+        Dict[str, List[Tensor]] val_outputs
+        Dict[str, List[Tensor]] test_outputs
+        List[float] thresholds
+
+        Callable[..., torch.Tensor] criterion
+        torch.Tensor {abstract} _positive_loss(torch.Tensor data, torch.Tensor confidence)
+        torch.Tensor {abstract} _negative_loss(torch.Tensor data, torch.Tensor confidence)
+        torch.Tensor {abstract} _uncertain_loss(torch.Tensor data, torch.Tensor confidence)
+        torch.Tensor {abstract} _prediction_score(torch.Tensor data)
+        torch.Tensor {abstract} compute_loss(torch.Tensor data, torch.Tensor confidence, int batch_idx)
+        List[float] {abstract} update_thresholds()
+        torch.Tensor {abstract} score(torch.Tensor batch)
+
+        configure_optimizers()
+        torch.Tensor forward(i, *args, **kwargs)
+        training_step(batch, batch_idx, *args, **kwargs)
+        configure_callbacks()
+        torch.Tensor update_confidence(datamodule: SelfSupervisionDataModule)
+        validation_step(batch, _batch_idx, *args, **kwargs)
+        on_validation_epoch_end()
+        test_step(batch, _batch_idx, *args, **kwargs)
+        on_test_epoch_end()
+        dict compute_test_metrics(scores, labels, threshold, eps=1e-10)
+        plot_test_metrics(scores, labels, mlf_logger)
+    }
+    class SelfSupervisionModule extends L.LightningModule
+    class SelfSupervisionModule implements SupportsSelfSupervision
+
+    L.LightningModule *-- L.Callback
+    SelfSupervisionModule *-- SelfSupervisionCallback
+}
+
+@enduml

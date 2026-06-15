@@ -1,0 +1,32 @@
+@startuml datamodules
+
+package datamodules{
+
+    interface L.LightningDataModule{
+        prepare_data()
+        setup(String stage)
+        DataLoader train_dataloader()
+        DataLoader val_dataloader()
+        DataLoader test_dataloader()
+    }
+
+    class SelfSupervisionDataModule{
+        L.LightningDataModule datamodule
+        DatasetWithConfidence train
+        int input_dim
+        int batch_size
+
+        setup(stage)
+        DataLoader train_dataloader()
+        DataLoader val_dataloader()
+        DataLoader test_dataloader()
+        DataLoader supervision_dataloader()
+    }
+    class SelfSupervisionDataModule extends L.LightningDataModule
+
+    SelfSupervisionDataModule *-- DatasetWithConfidence
+    SelfSupervisionDataModule o-- L.LightningDataModule
+
+}
+
+@enduml

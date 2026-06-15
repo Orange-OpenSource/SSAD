@@ -1,0 +1,8 @@
+.micromamba
+.data
+__pycache__/
+.vscode
+.ipynb_checkpoints
+.mypy_cache
+*Zone.Identifier
+examples/data/

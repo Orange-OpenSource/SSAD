@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="309px" preserveAspectRatio="none" style="width:322px;height:309px;" version="1.1" viewBox="0 0 322 309" width="322px" zoomAndPan="magnify"><defs><filter height="300%" id="f168ihulzu76zy" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[a60570e4b426f702ccbb0d459e3b9417]
+cluster models--><polygon fill="#FFFFFF" filter="url(#f168ihulzu76zy)" points="76,160,139,160,146,182.2969,246,182.2969,246,297,76,297,76,160" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="76" x2="146" y1="182.2969" y2="182.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="57" x="80" y="174.9951">models</text><!--MD5=[e91c1a4b5acdeea7335b57bbce66c349]
+cluster torch.nn--><polygon fill="#FFFFFF" filter="url(#f168ihulzu76zy)" points="22,24,95,24,102,46.2969,300,46.2969,300,136,22,136,22,24" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="22" x2="102" y1="46.2969" y2="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="67" x="26" y="38.9951">torch.nn</text><!--MD5=[4cbd93e8990bc2082736daffd1ec2e12]
+class Autoencoder--><rect fill="#FEFECE" filter="url(#f168ihulzu76zy)" height="86.4141" id="Autoencoder" style="stroke: #A80036; stroke-width: 1.5;" width="138" x="92" y="195"/><ellipse cx="118.25" cy="211" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M121.2188,216.6406 Q120.6406,216.9375 120,217.0781 Q119.3594,217.2344 118.6563,217.2344 Q116.1563,217.2344 114.8281,215.5938 Q113.5156,213.9375 113.5156,210.8125 Q113.5156,207.6875 114.8281,206.0313 Q116.1563,204.375 118.6563,204.375 Q119.3594,204.375 120,204.5313 Q120.6563,204.6875 121.2188,204.9844 L121.2188,207.7031 Q120.5938,207.125 120,206.8594 Q119.4063,206.5781 118.7813,206.5781 Q117.4375,206.5781 116.75,207.6563 Q116.0625,208.7188 116.0625,210.8125 Q116.0625,212.9063 116.75,213.9844 Q117.4375,215.0469 118.7813,215.0469 Q119.4063,215.0469 120,214.7813 Q120.5938,214.5 121.2188,213.9219 L121.2188,216.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="81" x="134.75" y="215.1543">Autoencoder</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="93" x2="229" y1="227" y2="227"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="73" x="98" y="241.2104">int input_dim</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="126" x="98" y="254.0151">List[int] encoder_dims</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="77" x="98" y="266.8198">int latent_dim</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="93" x2="229" y1="273.4141" y2="273.4141"/><!--MD5=[8c531128956a2ac9024aa8ee044055fe]
+class torch.nn.Module--><rect fill="#FEFECE" filter="url(#f168ihulzu76zy)" height="60.8047" id="torch.nn.Module" style="stroke: #A80036; stroke-width: 1.5;" width="246" x="38" y="59"/><ellipse cx="134.25" cy="75" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M137.2188,80.6406 Q136.6406,80.9375 136,81.0781 Q135.3594,81.2344 134.6563,81.2344 Q132.1563,81.2344 130.8281,79.5938 Q129.5156,77.9375 129.5156,74.8125 Q129.5156,71.6875 130.8281,70.0313 Q132.1563,68.375 134.6563,68.375 Q135.3594,68.375 136,68.5313 Q136.6563,68.6875 137.2188,68.9844 L137.2188,71.7031 Q136.5938,71.125 136,70.8594 Q135.4063,70.5781 134.7813,70.5781 Q133.4375,70.5781 132.75,71.6563 Q132.0625,72.7188 132.0625,74.8125 Q132.0625,76.9063 132.75,77.9844 Q133.4375,79.0469 134.7813,79.0469 Q135.4063,79.0469 136,78.7813 Q136.5938,78.5 137.2188,77.9219 L137.2188,80.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="45" x="154.75" y="79.1543">Module</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="39" x2="283" y1="91" y2="91"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="39" x2="283" y1="99" y2="99"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="234" x="44" y="113.2104">torch.Tensor forward(torch.Tensor input)</text><!--MD5=[3fbcec7fd3b4877648f75984bfcc99e7]
+reverse link torch.nn.Module to Autoencoder--><path d="M161,140.43 C161,158.15 161,177.9 161,194.91 " fill="none" id="torch.nn.Module&lt;-Autoencoder" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="154,140.15,161,120.15,168,140.15,154,140.15" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[a15d577b6a32cc712787a0b1921ca231]
+@startuml models
+
+package models{
+
+class torch.nn.Module{
+    torch.Tensor forward(torch.Tensor input)
+}
+
+class Autoencoder{
+    int input_dim
+    List[int] encoder_dims
+    int latent_dim
+}
+
+class Autoencoder extends torch.nn.Module
+}
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 11:22:07 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.11+10-1-24.04.2-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

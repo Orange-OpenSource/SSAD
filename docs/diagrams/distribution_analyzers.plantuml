@@ -1,0 +1,29 @@
+@startuml distribution_analyzers
+
+package distribution_analyzers{
+    '!include confidenceEstimators!ConfidenceIntervalsConfiguration
+
+    interface SupportsDistributionAnalysis{
+        ConfidenceIntervalsConfiguration analyze_distribution(
+        scores_batch: torch.Tensor,
+        current_conf: Optional[ConfidenceIntervalsConfiguration]
+        )
+        matplotlib.figure.Figure plot_analysis(style: str, plot_size: tuple[int, int])
+    }
+
+    class TriangularThresholding{
+        tuple[NDArray[Any], NDArray[Any]] get_histogram(self, distribution_array: NDArray[Any])
+        tuple[int, float] unimodal_left(counts, bin_edges, reverse: bool = False)
+        tuple[int, float] unimodal_right(counts, bin_edges)
+        tuple[NDArray[Any],NDArray[Any]] knuth_bin_histogram(
+        data: NDArray[Any],
+        min_bins: int,
+        max_bins: int,
+        step_search: int
+        )
+        float knuth_criterion(data_size: int, num_bins: int, counts: int)
+    }
+    class TriangularThresholding implements SupportsDistributionAnalysis
+}
+
+@enduml

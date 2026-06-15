@@ -1,0 +1,128 @@
+@startuml ssad_workflow
+
+title SSAD - Dependency Injection and Runtime Workflow (Sequence)
+
+autonumber
+
+participant "Base Dataset\n(DataFrameWithLabels)" as DS
+participant "DatasetWithConfidence" as DWC
+participant "SelfSupervisionDataModule" as SSDM
+participant "DistributionAnalyzer\n(SupportsDistributionAnalysis)" as DA
+participant "ConfidenceEstimator\n(SupportsConfidenceEstimation)" as CE
+participant "SelfSupervisionModule" as SSM
+participant "Model\n(torch.nn.Module)" as M
+participant "SelfSupervisionCallback" as SSCB
+participant "Trainer\n(Lightning)" as T
+participant "MLFlowLogger" as MLF
+
+== Dependency Injection / Construction ==
+
+group Data pipeline composition
+DS -> DWC: wrap(dataset, initial_confidence)\n(init_confidence_from_csv or ones)
+DWC -> SSDM: inject as train dataset
+note right of SSDM
+SelfSupervisionDataModule composes an existing
+LightningDataModule and enriches training samples
+with confidence values.
+end note
+end
+
+group Self-supervision module composition
+M -> SSM: inject model
+CE -> SSM: inject confidence_estimator
+DA -> SSM: inject distr_analyzer
+SSCB -> SSM: attached via configure_callbacks()
+note right of SSM
+Core philosophy:
+- scoring function from model outputs
+- confidence-aware losses
+- periodic confidence recalibration
+end note
+end
+
+group Trainer composition
+SSDM -> T: inject datamodule
+SSM -> T: inject lightning module
+MLF -> T: inject optional experiment logger
+end
+
+== Fit Start ==
+
+T -> SSCB: on_fit_start(trainer, pl_module)
+SSCB -> MLF: set run tags (dataset params, contamination, etc.) [optional]
+
+== Training Loop ==
+
+loop epoch = 0..N-1
+  T -> SSCB: on_train_epoch_start(...)
+  SSCB -> SSCB: record epoch_start_time
+
+  loop each training batch
+    T -> SSDM: train_dataloader()
+    SSDM --> T: batch {data, label, confidence}
+    T -> SSM: training_step(batch, batch_idx)
+    SSM -> SSM: compute_loss(data, confidence, batch_idx)
+    SSM --> T: loss
+  end
+
+  T -> SSCB: on_train_epoch_end(...)
+
+  SSCB -> MLF: log epoch duration + system metrics [optional]
+
+  alt epoch % every_n_epochs == 0 and epoch != 0
+    group Confidence Re-estimation
+      SSCB -> SSM: update_confidence(datamodule)
+
+      SSM -> SSDM: supervision_dataloader()
+      SSDM --> SSM: ordered dataloader (no shuffle)
+
+      loop each supervision batch
+        SSM -> M: forward / score(batch_data)
+        M --> SSM: batch_scores
+      end
+
+      SSM -> DA: analyze_distribution(scores_batch, current_conf)
+      DA --> SSM: ConfidenceIntervalsConfiguration
+
+      SSM -> CE: set configuration
+      SSM -> SSM: update_thresholds()
+
+      SSM -> CE: estimate_confidence(scores_batch)
+      CE --> SSM: confidence tensor
+
+      SSM --> SSCB: new confidence tensor
+      SSCB -> DWC: replace/update train confidence
+    end
+
+    SSCB -> MLF: log confidence CSV [optional]
+    SSCB -> MLF: log confidence intervals JSON [optional]
+    SSCB -> MLF: log distribution analysis figure [optional]
+  else no recalibration this epoch
+  end
+
+  group Validation (if configured)
+    T -> SSDM: val_dataloader()
+    SSDM --> T: validation batches
+    T -> SSM: validation_step(...)
+    T -> SSM: on_validation_epoch_end()
+    SSM -> SSM: compute AUC/AP + threshold metrics
+    SSM -> MLF: log validation metrics [optional]
+  end
+end
+
+== Test Phase ==
+
+T -> SSDM: test_dataloader()
+SSDM --> T: test batches
+
+loop each test batch
+  T -> SSM: test_step(...)
+  SSM -> SSM: store scores and labels
+end
+
+T -> SSM: on_test_epoch_end()
+SSM -> SSM: compute metrics for each threshold
+SSM -> MLF: log test_metrics_threshold=*.json [optional]
+SSM -> MLF: log ROC/PR figures [optional]
+
+@enduml

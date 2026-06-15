@@ -1,0 +1,70 @@
+@startuml ssad_workflow_light
+title SSAD - Light sequence (DI + core workflow)
+
+autonumber
+
+participant "Base Dataset" as DS
+participant "DatasetWithConfidence" as DWC
+participant "SelfSupervisionDataModule" as DM
+participant "SelfSupervisionModule" as SSM
+participant "Model\n(torch.nn.Module)" as M
+participant "DistributionAnalyzer" as DA
+participant "ConfidenceEstimator" as CE
+participant "SelfSupervisionCallback" as CB
+participant "Trainer" as T
+participant "MLflowLogger" as ML
+
+== Dependency Injection ==
+
+DS -> DWC: wrap dataset + init confidence
+DWC -> DM: inject train dataset with confidence
+
+M -> SSM: inject model
+DA -> SSM: inject distribution analyzer
+CE -> SSM: inject confidence estimator
+CB -> SSM: attached via configure_callbacks()
+
+DM -> T: inject datamodule
+SSM -> T: inject lightning module
+ML -> T: optional logger
+
+== Training Philosophy ==
+
+T -> SSM: training_step(batch)
+SSM -> M: forward / score
+SSM -> SSM: confidence-aware loss\n(normal / abnormal / unknown)
+
+loop every epoch
+  T -> CB: on_train_epoch_end()
+
+  alt epoch % every_n_epochs == 0
+    CB -> SSM: update_confidence(datamodule)
+    SSM -> DM: supervision_dataloader()
+
+    loop batches for supervision
+      SSM -> M: score(batch)
+    end
+
+    SSM -> DA: analyze_distribution(scores)
+    DA --> SSM: ConfidenceIntervalsConfiguration
+
+    SSM -> CE: set configuration
+    SSM -> CE: estimate_confidence(scores)
+    CE --> SSM: updated confidence tensor
+
+    SSM --> CB: new confidence
+    CB -> DWC: replace/update confidence
+
+    CB -> ML: log confidence / intervals / analysis [optional]
+  end
+end
+
+== Evaluation ==
+
+T -> SSM: validation_step / on_validation_epoch_end
+SSM -> ML: log val metrics [optional]
+
+T -> SSM: test_step / on_test_epoch_end
+SSM -> ML: log test metrics + ROC/PR [optional]
+
+@enduml

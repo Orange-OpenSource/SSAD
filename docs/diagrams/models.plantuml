@@ -1,0 +1,18 @@
+@startuml models
+
+package models{
+
+class torch.nn.Module{
+    torch.Tensor forward(torch.Tensor input)
+}
+
+class Autoencoder{
+    int input_dim
+    List[int] encoder_dims
+    int latent_dim
+}
+
+class Autoencoder extends torch.nn.Module
+}
+
+@enduml

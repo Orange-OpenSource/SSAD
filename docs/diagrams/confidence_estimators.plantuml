@@ -1,0 +1,39 @@
+@startuml confidence_estimators
+
+package confidence_estimators {
+
+    interface SupportsConfidenceEstimation{
+        ConfidenceIntervalsConfiguration configuration
+        torch.Tensor estimate_confidence(scores_batch: torch.Tensor)
+    }
+
+    abstract class BaseConfidenceEstimator implements SupportsConfidenceEstimation{
+        Optional[ConfidenceIntervalsConfiguration] configuration
+        Optional[torch.Tensor] distribution
+
+        torch.Tensor {abstract} _confidence_normal(score)
+        torch.Tensor {abstract} _confidence_abnormal(score)
+        torch.Tensor {abstract} _confidence_unknown(score)
+        torch.Tensor estimate_confidence(scores_batch: torch.Tensor)
+    }
+
+    class ConfidenceIntervalsConfiguration{
+        Interval normal
+        Interval abnormal
+        Interval unknown
+    }
+
+    class Interval{
+        float left
+        float right
+        bool closed_left
+        bool closed_right
+        torch.Tensor contains_tensor_mask(item: torch.Tensor)
+    }
+
+    BaseConfidenceEstimator *-- ConfidenceIntervalsConfiguration
+    ConfidenceIntervalsConfiguration *-- Interval
+
+}
+
+@enduml

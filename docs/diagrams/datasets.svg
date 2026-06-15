@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="443px" preserveAspectRatio="none" style="width:761px;height:443px;" version="1.1" viewBox="0 0 761 443" width="761px" zoomAndPan="magnify"><defs><filter height="300%" id="f1rhay1c24vcfs" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[6c04539f022a645d9ee14b12832d9c61]
+cluster datasets--><polygon fill="#FFFFFF" filter="url(#f1rhay1c24vcfs)" points="22,147,96,147,103,169.2969,739,169.2969,739,431,22,431,22,147" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="22" x2="103" y1="169.2969" y2="169.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="68" x="26" y="161.9951">datasets</text><!--MD5=[8639b6965f21c551d878853afef83a02]
+cluster torch--><polygon fill="#FFFFFF" filter="url(#f1rhay1c24vcfs)" points="576,24,624,24,631,46.2969,690,46.2969,690,123,576,123,576,24" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="576" x2="631" y1="46.2969" y2="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="42" x="580" y="38.9951">torch</text><!--MD5=[4326ca6a69f53776edc7eadbd6aaf844]
+class DatasetWithLabels--><rect fill="#FEFECE" filter="url(#f1rhay1c24vcfs)" height="73.6094" id="DatasetWithLabels" style="stroke: #A80036; stroke-width: 1.5;" width="149" x="558.5" y="341"/><ellipse cx="573.5" cy="357" fill="#B4A7E5" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M569.4219,352.7656 L569.4219,350.6094 L576.8125,350.6094 L576.8125,352.7656 L574.3438,352.7656 L574.3438,360.8438 L576.8125,360.8438 L576.8125,363 L569.4219,363 L569.4219,360.8438 L571.8906,360.8438 L571.8906,352.7656 L569.4219,352.7656 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="117" x="587.5" y="361.1543">DatasetWithLabels</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="559.5" x2="706.5" y1="373" y2="373"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="58" x="564.5" y="387.2104">Any labels</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="49" x="564.5" y="400.0151">Any data</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="559.5" x2="706.5" y1="406.6094" y2="406.6094"/><!--MD5=[471afdce0472c8a397c65dea2b23649d]
+class DatasetWithConfidence--><rect fill="#FEFECE" filter="url(#f1rhay1c24vcfs)" height="99.2188" id="DatasetWithConfidence" style="stroke: #A80036; stroke-width: 1.5;" width="179" x="543.5" y="182"/><ellipse cx="558.5" cy="198" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M561.4688,203.6406 Q560.8906,203.9375 560.25,204.0781 Q559.6094,204.2344 558.9063,204.2344 Q556.4063,204.2344 555.0781,202.5938 Q553.7656,200.9375 553.7656,197.8125 Q553.7656,194.6875 555.0781,193.0313 Q556.4063,191.375 558.9063,191.375 Q559.6094,191.375 560.25,191.5313 Q560.9063,191.6875 561.4688,191.9844 L561.4688,194.7031 Q560.8438,194.125 560.25,193.8594 Q559.6563,193.5781 559.0313,193.5781 Q557.6875,193.5781 557,194.6563 Q556.3125,195.7188 556.3125,197.8125 Q556.3125,199.9063 557,200.9844 Q557.6875,202.0469 559.0313,202.0469 Q559.6563,202.0469 560.25,201.7813 Q560.8438,201.5 561.4688,200.9219 L561.4688,203.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="147" x="572.5" y="202.1543">DatasetWithConfidence</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="544.5" x2="721.5" y1="214" y2="214"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="151" x="549.5" y="228.2104">DatasetWithLabels dataset</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="138" x="549.5" y="241.0151">torch.Tensor confidence</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="544.5" x2="721.5" y1="247.6094" y2="247.6094"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="67" x="549.5" y="261.8198">int __len__()</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="133" x="549.5" y="274.6245">dict __getitem__(int idx)</text><!--MD5=[d0aa94084c3394824543c6108bae74d3]
+class module_functions--><rect fill="#FEFECE" filter="url(#f1rhay1c24vcfs)" height="73.6094" id="module_functions" style="stroke: #A80036; stroke-width: 1.5;" width="470" x="38" y="194.5"/><ellipse cx="213.75" cy="210.5" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M216.7188,216.1406 Q216.1406,216.4375 215.5,216.5781 Q214.8594,216.7344 214.1563,216.7344 Q211.6563,216.7344 210.3281,215.0938 Q209.0156,213.4375 209.0156,210.3125 Q209.0156,207.1875 210.3281,205.5313 Q211.6563,203.875 214.1563,203.875 Q214.8594,203.875 215.5,204.0313 Q216.1563,204.1875 216.7188,204.4844 L216.7188,207.2031 Q216.0938,206.625 215.5,206.3594 Q214.9063,206.0781 214.2813,206.0781 Q212.9375,206.0781 212.25,207.1563 Q211.5625,208.2188 211.5625,210.3125 Q211.5625,212.4063 212.25,213.4844 Q212.9375,214.5469 214.2813,214.5469 Q214.9063,214.5469 215.5,214.2813 Q216.0938,214 216.7188,213.4219 L216.7188,216.1406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="110" x="234.25" y="214.6543">module_functions</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="39" x2="507" y1="226.5" y2="226.5"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="39" x2="507" y1="234.5" y2="234.5"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="443" x="44" y="248.7104">torch.Tensor init_confidence_from_csv(dataset: Dataset, path: Optional[Path])</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="458" x="44" y="261.5151">save_confidence_to_csv(confidence_dataset: DatasetWithConfidence, path: Path)</text><!--MD5=[aca1f6a648e778f4ec95deeaffee4990]
+class torch.Dataset--><rect fill="#FEFECE" filter="url(#f1rhay1c24vcfs)" height="48" id="torch.Dataset" style="stroke: #A80036; stroke-width: 1.5;" width="82" x="592" y="59"/><ellipse cx="607" cy="75" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M609.9688,80.6406 Q609.3906,80.9375 608.75,81.0781 Q608.1094,81.2344 607.4063,81.2344 Q604.9063,81.2344 603.5781,79.5938 Q602.2656,77.9375 602.2656,74.8125 Q602.2656,71.6875 603.5781,70.0313 Q604.9063,68.375 607.4063,68.375 Q608.1094,68.375 608.75,68.5313 Q609.4063,68.6875 609.9688,68.9844 L609.9688,71.7031 Q609.3438,71.125 608.75,70.8594 Q608.1563,70.5781 607.5313,70.5781 Q606.1875,70.5781 605.5,71.6563 Q604.8125,72.7188 604.8125,74.8125 Q604.8125,76.9063 605.5,77.9844 Q606.1875,79.0469 607.5313,79.0469 Q608.1563,79.0469 608.75,78.7813 Q609.3438,78.5 609.9688,77.9219 L609.9688,80.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="50" x="621" y="79.1543">Dataset</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="593" x2="673" y1="91" y2="91"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="593" x2="673" y1="99" y2="99"/><!--MD5=[3fa6a49edc77290c33373c97c4526ee9]
+reverse link torch.Dataset to DatasetWithConfidence--><path d="M633,127.48 C633,144.6 633,164.34 633,181.93 " fill="none" id="torch.Dataset&lt;-DatasetWithConfidence" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="626,127.21,633,107.21,640,127.21,626,127.21" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[8553da53b75e740668e201540376a25d]
+reverse link DatasetWithConfidence to DatasetWithLabels--><path d="M633,294.13 C633,310.01 633,326.6 633,340.72 " fill="none" id="DatasetWithConfidence&lt;-DatasetWithLabels" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="633,281.02,629,287.02,633,293.02,637,287.02,633,281.02" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[bd694b29f202fc1b62e9cf4fc70c2dbd]
+@startuml datasets
+
+package datasets{
+
+    class torch.Dataset
+
+    interface DatasetWithLabels{
+        Any labels
+        Any data
+    }
+
+    class DatasetWithConfidence {
+        DatasetWithLabels dataset
+        torch.Tensor confidence
+        int __len__()
+        dict __getitem__(int idx)
+    }
+    class DatasetWithConfidence extends torch.Dataset
+
+    class module_functions{
+        torch.Tensor init_confidence_from_csv(dataset: Dataset, path: Optional[Path])
+        save_confidence_to_csv(confidence_dataset: DatasetWithConfidence, path: Path)
+    }
+
+    DatasetWithConfidence o- - DatasetWithLabels
+
+}
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 11:22:07 CET 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.11+10-1-24.04.2-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

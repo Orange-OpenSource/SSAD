@@ -1,0 +1,18 @@
+@startuml complete
+
+
+!include confidence_estimators.plantuml
+!include datamodules.plantuml
+!include datasets.plantuml
+!include distribution_analyzers.plantuml
+!include models.plantuml
+!include modules.plantuml
+
+' ..> represents a dependency injection
+    SelfSupervisionModule ..> SelfSupervisionDataModule
+SelfSupervisionModule ..> SupportsDistributionAnalysis : dependency injection
+SelfSupervisionModule ..> SupportsConfidenceEstimation : dependency injection
+SelfSupervisionModule o-- torch.nn.Module
+
+
+@enduml

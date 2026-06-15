@@ -1,0 +1,29 @@
+@startuml datasets
+
+package datasets{
+
+    class torch.Dataset
+
+    interface DatasetWithLabels{
+        Any labels
+        Any data
+    }
+
+    class DatasetWithConfidence {
+        DatasetWithLabels dataset
+        torch.Tensor confidence
+        int __len__()
+        dict __getitem__(int idx)
+    }
+    class DatasetWithConfidence extends torch.Dataset
+
+    class module_functions{
+        torch.Tensor init_confidence_from_csv(dataset: Dataset, path: Optional[Path])
+        save_confidence_to_csv(confidence_dataset: DatasetWithConfidence, path: Path)
+    }
+
+    DatasetWithConfidence o-- DatasetWithLabels
+
+}
+
+@enduml
