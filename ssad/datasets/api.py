@@ -16,6 +16,7 @@ from .utils import (
     time_split_train_val_test,
     to_categorical,
 )
+from .pipeline import create_preprocessing_pipeline
 
 __all__ = [
     "GeneralTabularDataModule",
@@ -24,4 +25,5 @@ __all__ = [
     "replace_values_with_nan",
     "time_split_train_val_test",
     "to_categorical",
+    "create_preprocessing_pipeline",
 ]

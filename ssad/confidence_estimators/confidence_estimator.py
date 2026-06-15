@@ -42,7 +42,6 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
     These functions should be implemented in the _estimate_confidence_from_model_score method.
     """
 
-    # TODO
     def __init__(self):
         super().__init__()
         self.configuration: Optional[ConfidenceIntervalsConfiguration] = None
@@ -76,17 +75,6 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
         if self.configuration is None:
             raise ValueError("Confidence estimator configuration is None")
 
-        # for index, score in enumerate(scores_batch):
-        #     score = score.item()
-        #     if score in self.intervals.normal:
-        #         confidence[index] = self._confidence_normal(score)
-        #     elif score in self.intervals.abnormal:
-        #         confidence[index] = self._confidence_abnormal(score)
-        #     elif score in self.intervals.unknown:
-        #         confidence[index] = self._confidence_unknown(score)
-        #     else:
-        #         raise ValueError(f"Score '{score.item()}' not in defined intervals.")
-
         # TODO: rework signatures of confidence normal/abnormal/unknown
         normal_confidences = self._confidence_normal(scores_batch)
         abnormal_confidences = self._confidence_abnormal(scores_batch)
@@ -101,5 +89,7 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
             abnormal_confidences,
             confidence,
         )
+        
+        # TODO unknown???
 
         return confidence

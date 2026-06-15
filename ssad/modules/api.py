@@ -10,6 +10,7 @@
 #          based on self-supervised training with dynamic sample confidence updates.
 """Public API for self-supervision modules."""
 from .cosine_reconstruction_module import CosineReconstructionModule
+from .free_energy_module import FreeEnergyScoringModule
 from .self_supervision_module import SelfSupervisionModule
 from .supports_self_supervision import SupportsSelfSupervision
 
@@ -17,4 +18,5 @@ __all__ = [
     "SupportsSelfSupervision",
     "SelfSupervisionModule",
     "CosineReconstructionModule",
+    "FreeEnergyScoringModule",
 ]

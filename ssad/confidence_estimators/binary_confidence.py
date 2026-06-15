@@ -21,13 +21,10 @@ class BinaryConfidence(BaseConfidenceEstimator):
     """Binary confidence estimator"""
 
     def _confidence_normal(self, score):
-        # return torch.Tensor(1)
         return torch.ones_like(score)
 
     def _confidence_abnormal(self, score):
-        # return torch.Tensor(-1)
         return torch.full_like(score, -1)
 
     def _confidence_unknown(self, score):
-        # return torch.Tensor(0)
         return torch.zeros_like(score)

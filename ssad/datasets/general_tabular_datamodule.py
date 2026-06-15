@@ -43,13 +43,14 @@ logger = logging.getLogger(__name__)
 class GeneralTabularDataModule(L.LightningDataModule):
     """
     A LightningDataModule for tabular datasets with customizable preprocessing.
-    Only destined for methods that do not take into account the temporal dependencies (order not important).
+    Only destined for methods that do not take into account the temporal dependencies.
 
     Loads a CSV file, applies preprocessing (casting, encoding, imputation, scaling),
     splits it into train/val/test sets with contamination control, and builds PyTorch DataLoaders.
 
     dataset_path (str): path to the original data
-    large_dataset(bool): if true, uses an indices csv file built in chunks to prevent full data loading and limit RAM usage.
+    large_dataset(bool): if true, uses an indices csv file built in chunks
+                         to prevent full data loading and limit RAM usage.
     label_column (str): Name of the column indicating class labels.
     p_train (float): Proportion of total data for training.
     p_val (float): Proportion of total data for validation.
@@ -303,8 +304,8 @@ class GeneralTabularDataModule(L.LightningDataModule):
         self, train: pd.DataFrame, val: pd.DataFrame, test: pd.DataFrame
     ):
         """
-        Sauvegarde les fichiers prétraités dans le dossier spécifié,
-        en s'assurant que le répertoire existe.
+        Save the preprocessed files in the specified folder,
+        ensuring that the directory exists.
         """
         self.preprocessed_dir.mkdir(parents=True, exist_ok=True)
 

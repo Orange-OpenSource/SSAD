@@ -14,24 +14,18 @@ Implementation of the GRAnD model using the SSAD library.
 N. Najari, S. Berlemont, G. Lefebvre, S. Duffner, et C. Garcia, « Robust Variational Autoencoders and Normalizing Flows for Unsupervised Network Anomaly Detection », in Advanced Information Networking and Applications, vol. 450, L. Barolli, F. Hussain, et T. Enokido, Éd., in Lecture Notes in Networks and Systems, vol. 450. , Cham: Springer International Publishing, 2022, p. 281-292. doi: 10.1007/978-3-030-99587-4_24.
 
 """
-
 import os
-
-import logging
 from datetime import datetime
+import logging
 
 import pytz
-import lightning as L
 import torch
+import lightning as L
 from lightning.pytorch.loggers import MLFlowLogger
 
-from datasets.mnist import MNISTAnomalyDataModule
-  
 import ssad
+from datasets.mnist import MNISTAnomalyDataModule
 
-LOG_LEVEL = "WARNING" # INFO -- WARNING -- ERROR
-DATASET_NAME = "MNIST"
-MODEL_NAME = "GRAnD"
 
 batch_size = 256
 n_rows=5000
@@ -40,6 +34,10 @@ p_val=0.1
 pa_train=0.1
 pa_val=0.5
 pa_test=0.5
+
+LOG_LEVEL = "WARNING" # INFO -- WARNING -- ERROR
+DATASET_NAME = "MNIST"
+MODEL_NAME = "GRAnD"
 
 ssad.setup_logging(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
@@ -99,7 +97,7 @@ trainer = L.Trainer(
     logger=MLFlowLogger(
         experiment_name=MODEL_NAME,
         run_name=run_name,
-        log_model=True, 
+        log_model=True,
         tracking_uri=f"file:{ROOT_DIR}/ml-runs",
     ),
     reload_dataloaders_every_n_epochs=1,

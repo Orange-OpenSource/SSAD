@@ -11,7 +11,10 @@
 """Public API for self-supervision distribution analyzers."""
 from .supports_distribution_analysis import SupportsDistributionAnalysis
 from .triangular_thresholding import TriangularThresholding
+from .evt_thresholding import EVTThresholding
 
 __all__ = [
     "SupportsDistributionAnalysis",
-    "TriangularThresholding"]
+    "TriangularThresholding",
+    "EVTThresholding",
+]

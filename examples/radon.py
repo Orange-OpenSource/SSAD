@@ -16,10 +16,11 @@ N. Najari, S. Berlemont, G. Lefebvre, S. Duffner, et C. Garcia, « RADON: Robust
 """
 import os
 from datetime import datetime
-import lightning as L
+import logging
 
 import pytz
 import torch
+import lightning as L
 from lightning.pytorch.loggers import MLFlowLogger
 
 import ssad
@@ -92,7 +93,7 @@ trainer = L.Trainer(
     logger=MLFlowLogger(
         experiment_name=MODEL_NAME,
         run_name=run_name,
-        log_model=True, 
+        log_model=True,
         tracking_uri=f"file:{ROOT_DIR}/ml-runs",
     ),
     reload_dataloaders_every_n_epochs=1,
