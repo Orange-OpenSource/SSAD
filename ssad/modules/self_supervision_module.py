@@ -12,36 +12,30 @@
 Self Supervision Module
 """
 
-import warnings
 import logging
-from abc import ABC, abstractmethod
-from typing import Callable, Sequence, Union, override, List, Dict
 import time
+import warnings
+from abc import ABC, abstractmethod
+from typing import Callable, Dict, List, Sequence, Union
+
 import lightning as L
-import numpy as np
-import torch
-from torch import nn, Tensor
-from sklearn.metrics import (  # type: ignore[import-untyped]
-    roc_auc_score,
-    average_precision_score,
-    f1_score,
-    precision_score,
-    recall_score,
-    accuracy_score,
-    roc_curve,
-    precision_recall_curve,
-    confusion_matrix,
-)
 import matplotlib.pyplot as plt
 import mlflow
-from ssad.loggers.mlflow_logger import (
-    get_mlflow_logger,
-    log_confidence,
-    log_confidence_analysis,
-    log_confidence_intervals,
-    log_system_metrics,
-    log_test_metrics,
+import numpy as np
+import torch
+from sklearn.metrics import (
+    accuracy_score,  # type: ignore[import-untyped]
+    average_precision_score,
+    confusion_matrix,
+    f1_score,
+    precision_recall_curve,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+    roc_curve,
 )
+from torch import Tensor, nn
+from typing_extensions import override
 
 from ssad.confidence_estimators.supports_confidence_estimation import (
     SupportsConfidenceEstimation,
@@ -51,11 +45,19 @@ from ssad.datamodules.self_supervision_datamodule import SelfSupervisionDataModu
 from ssad.distribution_analyzers.supports_distribution_analysis import (
     SupportsDistributionAnalysis,
 )
+from ssad.loggers.mlflow_logger import (
+    get_mlflow_logger,
+    log_confidence,
+    log_confidence_analysis,
+    log_confidence_intervals,
+    log_system_metrics,
+    log_test_metrics,
+)
+
 from .supports_self_supervision import SupportsSelfSupervision
 
 ## use of prototype masked tensor API, may require maintenance down the road
 # from torch.masked import MaskedTensor, masked_tensor
-
 
 # Disable prototype warnings and such
 warnings.filterwarnings(action="ignore", category=UserWarning)
@@ -67,7 +69,7 @@ class SelfSupervisionCallback(L.Callback):
     Lightning callback used to regularly update confidence in training samples during training.
     """
 
-    def on_fit_start(self, trainer, pl_module):
+    def on_fit_start(self, trainer, pl_module):  # pylint: disable=unused-argument
         client = mlflow.tracking.MlflowClient()
         run_id = trainer.logger.run_id
         tags_to_log = {
@@ -83,7 +85,9 @@ class SelfSupervisionCallback(L.Callback):
             client.set_tag(run_id, key, str(value))
 
     @override
-    def on_train_epoch_start(self, trainer, pl_module):
+    def on_train_epoch_start(
+        self, trainer, pl_module
+    ):  # pylint: disable=unused-argument
         pl_module.epoch_start_time = time.time()
 
     @override
@@ -144,7 +148,9 @@ class SelfSupervisionCallback(L.Callback):
                 )
 
 
-class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
+class SelfSupervisionModule(
+    L.LightningModule, ABC, SupportsSelfSupervision
+):  # pylint: disable=too-many-instance-attributes
     """Lightning module implementing self-supervision.
 
     Self-supervision consists in leveraging a representation of an input extracted
@@ -176,7 +182,7 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
         """Criterion to compute a score between model outputs and inputs."""
         raise NotImplementedError()
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         model: nn.Module,
         every_n_epochs: int,
@@ -243,7 +249,7 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
     def _prediction_score(self, data: torch.Tensor) -> torch.Tensor:
         raise NotImplementedError()
 
-    #TODO: generic compute_loss implementation
+    # TODO: generic compute_loss implementation
     @abstractmethod
     def compute_loss(
         self, data: torch.Tensor, confidence: torch.Tensor, batch_idx: int
@@ -260,10 +266,13 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
         optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
         return optimizer
 
-    def forward(self, i, *args, **kwargs):  # pylint: disable=W0221
+    def forward(self, i, *args, **kwargs):  # pylint: disable=unused-argument
         return self.model.forward(i)
 
-    def training_step(self, batch, batch_idx, *args, **kwargs):  # pylint: disable=W0221
+    def training_step(
+        self, batch, batch_idx, *args, **kwargs
+    ):  # pylint: disable=unused-argument
+
         # Squeeze removes dimensions of size 1 (e.g., from [32, 1, 28, 28] to [32, 28, 28]);
         # Such extra dimensions often come from how the dataset was originally created or loaded.
         data = batch["data"].squeeze()
@@ -338,7 +347,7 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
 
     def validation_step(
         self, batch, _batch_idx, *args, **kwargs
-    ):  # pylint: disable=W0221
+    ):  # pylint: disable=unused-argument
         if isinstance(batch, (tuple, list)):
             x, y = batch
         elif isinstance(batch, dict):
@@ -392,7 +401,9 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
         # Freeing Memory
         self.val_outputs = {"scores": [], "labels": []}
 
-    def test_step(self, batch, _batch_idx, *args, **kwargs):  # pylint: disable=W0221
+    def test_step(
+        self, batch, _batch_idx, *args, **kwargs
+    ):  # pylint: disable=unused-argument
 
         if isinstance(batch, (tuple, list)):
             x, y = batch
@@ -423,7 +434,7 @@ class SelfSupervisionModule(L.LightningModule, ABC, SupportsSelfSupervision):
         self.plot_test_metrics(scores, labels, mlf_logger)
 
         # Freeing Memory
-        self.test_outputs = None
+        self.test_outputs = {"scores": [], "labels": []}
 
     def compute_test_metrics(self, scores, labels, threshold, eps=1e-10):
         # Compute predictions

@@ -8,3 +8,6 @@
 # Authors: see CONTRIBUTORS
 # Software description: A Python library for autoencoder-based anomaly detection
 #          based on self-supervised training with dynamic sample confidence updates.
+"""Loggers
+Module that defines logging behavior and loggers.    
+"""

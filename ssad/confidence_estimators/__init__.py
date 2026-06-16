@@ -10,7 +10,6 @@
 #          based on self-supervised training with dynamic sample confidence updates.
 r"""
 # What is confidence estimator
-A confidence estimator is a module that, given a value such as a reconstruction error, or a gradient value,
-returns a confidence score comprised between -1 and 1.
-
+A confidence estimator is a module that, given a value such as a reconstruction error,
+or a gradient value, returns a confidence score comprised between -1 and 1.
 """

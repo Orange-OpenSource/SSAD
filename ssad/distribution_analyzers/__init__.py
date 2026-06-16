@@ -13,4 +13,3 @@ A distribution analyzer aims to determine the parameters for confidence estimato
 They rely on mode separation techniques, or theories such as Extreme Value Theory
 to compute thresholds for normal and abnormal samples.
 '''
-

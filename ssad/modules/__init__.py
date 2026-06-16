@@ -8,3 +8,8 @@
 # Authors: see CONTRIBUTORS
 # Software description: A Python library for autoencoder-based anomaly detection
 #          based on self-supervised training with dynamic sample confidence updates.
+"""Self-Supervision modules
+
+Defines the prototype, abstract self-supervision module class, 
+and concrete implementations.
+"""

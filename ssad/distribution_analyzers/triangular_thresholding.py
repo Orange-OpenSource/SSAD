@@ -15,13 +15,14 @@ Rosin, Paul. (2001). Unimodal thresholding. Pattern Recognition. 34. 2083-2096.
 10.1016/S0031-3203(00)00136-9.
 """
 
+from __future__ import annotations
+
 from math import lgamma
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from numpy.typing import NDArray
 
 from ssad.confidence_estimators.confidence_intervals_configuration import (
     ConfidenceIntervalsConfiguration,
@@ -29,6 +30,9 @@ from ssad.confidence_estimators.confidence_intervals_configuration import (
 )
 
 from .supports_distribution_analysis import SupportsDistributionAnalysis
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 
 class TriangularThresholding(SupportsDistributionAnalysis):
@@ -44,7 +48,7 @@ class TriangularThresholding(SupportsDistributionAnalysis):
     ):
         self.bin_estimator = bin_estimator
         self.counts: Optional[NDArray[np.int_]] = None
-        self.bin_edges: Optional[NDArray[np.float_]] = None
+        self.bin_edges: Optional[NDArray[np.floating[Any]]] = None
         self.abnormal_threshold = abnormal_threshold
         self.normal_threshold = normal_threshold
 
@@ -75,7 +79,7 @@ class TriangularThresholding(SupportsDistributionAnalysis):
             _idx_normal += cutting_index
 
             _idx_abnormal, self.abnormal_threshold = unimodal_right(
-                self.counts[: cutting_index], self.bin_edges[:cutting_index + 1]
+                self.counts[:cutting_index], self.bin_edges[: cutting_index + 1]
             )
 
         normal_interval = Interval(left=self.normal_threshold, right=1, closed="right")
@@ -117,8 +121,6 @@ class TriangularThresholding(SupportsDistributionAnalysis):
             )
             ax.set_xlabel("Score")
             ax.set_ylabel("Count")
-
-            # Add legend to explain the lines
             ax.legend()
             plt.tight_layout()
 
@@ -151,8 +153,8 @@ class TriangularThresholding(SupportsDistributionAnalysis):
             return knuth_bin_histogram(
                 data=distribution_array, min_bins=10, max_bins=250, step_search=1
             )
-        else:
-            return np.histogram(a=distribution_array, bins=self.bin_estimator)
+
+        return np.histogram(a=distribution_array, bins=self.bin_estimator)
 
 
 def unimodal_left(counts, bin_edges, reverse: bool = False) -> tuple[int, float]:
@@ -216,7 +218,7 @@ def unimodal_left(counts, bin_edges, reverse: bool = False) -> tuple[int, float]
     if reverse:
         index_threshold_bin = len(counts) - 1 - index_threshold_bin
 
-    #return index_threshold_bin, bin_centers[index_threshold_bin]
+    # return index_threshold_bin, bin_centers[index_threshold_bin]
     return index_threshold_bin, threshold_bin
 
 

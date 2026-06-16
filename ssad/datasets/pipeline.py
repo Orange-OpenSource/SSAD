@@ -12,23 +12,27 @@
 Provides a customizable preprocessing pipeline for tabular data.
 Includes handling for categorical casting, column dropping, encoding, inf/nan replacement and scaling. # pylint: disable=line-too-long
 """
+
 from typing import List, Optional, Union, Callable
 import numpy as np
-from sklearn.pipeline import Pipeline # type: ignore[import-untyped]
-from sklearn.preprocessing import FunctionTransformer, MinMaxScaler # type: ignore[import-untyped]
-from sklearn.impute import SimpleImputer # type: ignore[import-untyped]
-import category_encoders as ce # type: ignore[import-untyped]
+from sklearn.pipeline import Pipeline  # type: ignore[import-untyped]
+from sklearn.preprocessing import FunctionTransformer, MinMaxScaler  # type: ignore[import-untyped]
+from sklearn.impute import SimpleImputer  # type: ignore[import-untyped]
+import category_encoders as ce  # type: ignore[import-untyped]
 from .utils import drop_cols, replace_values_with_nan, to_categorical
 
 
-
-def create_preprocessing_pipeline(
+def create_preprocessing_pipeline(  # pylint: disable=too-many-positional-arguments
     categorical_cols: Optional[List[str]] = None,
     cols_to_drop: Optional[List[str]] = None,
     count_encode_cols: Optional[List[str]] = None,
-    scaler: Optional[Union[Callable[[], object], object]] = lambda: MinMaxScaler(feature_range=(0, 1)), # pylint: disable=line-too-long
+    scaler: Optional[Union[Callable[[], object], object]] = lambda: MinMaxScaler(
+        feature_range=(0, 1)
+    ),
     replace_inf: bool = True,
-    fillna: Optional[Union[Callable[[], object], object]] = lambda: SimpleImputer(strategy="mean"),
+    fillna: Optional[Union[Callable[[], object], object]] = lambda: SimpleImputer(
+        strategy="mean"
+    ),
 ) -> Pipeline:
     """
     Creates a scikit-learn Pipeline with optional preprocessing steps for tabular data.
@@ -48,28 +52,40 @@ def create_preprocessing_pipeline(
     steps = []
 
     if categorical_cols:
-        steps.append((
-            "cast_categorical",
-            FunctionTransformer(to_categorical, kw_args={"cols": categorical_cols})
-        ))
+        steps.append(
+            (
+                "cast_categorical",
+                FunctionTransformer(to_categorical, kw_args={"cols": categorical_cols}),
+            )
+        )
 
     if cols_to_drop:
-        steps.append((
-            "drop_columns",
-            FunctionTransformer(drop_cols, kw_args={"cols": cols_to_drop})
-        ))
+        steps.append(
+            (
+                "drop_columns",
+                FunctionTransformer(drop_cols, kw_args={"cols": cols_to_drop}),
+            )
+        )
 
     if count_encode_cols:
-        steps.append((
-            "count_encode",
-            ce.CountEncoder(handle_unknown=0, return_df=True, cols=count_encode_cols)
-        ))
+        steps.append(
+            (
+                "count_encode",
+                ce.CountEncoder(
+                    handle_unknown=0, return_df=True, cols=count_encode_cols
+                ),
+            )
+        )
 
     if replace_inf:
-        steps.append((
-            "replace_inf_with_nan",
-            FunctionTransformer(func=replace_values_with_nan, kw_args={"values": [np.inf, -np.inf]})
-        ))
+        steps.append(
+            (
+                "replace_inf_with_nan",
+                FunctionTransformer(
+                    func=replace_values_with_nan, kw_args={"values": [np.inf, -np.inf]}
+                ),
+            )
+        )
 
     if fillna:
         imputer = fillna() if callable(fillna) else fillna

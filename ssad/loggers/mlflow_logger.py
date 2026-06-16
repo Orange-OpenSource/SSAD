@@ -11,6 +11,7 @@
 """
 Utility functions for logging confidence data, system metrics, and analysis outputs to MLflow.
 """
+
 from typing import Optional, cast
 import tempfile
 from pathlib import Path
@@ -21,9 +22,17 @@ from mlflow.tracking import MlflowClient  # type: ignore[import-untyped]
 import psutil
 
 
-from ssad.confidence_estimators.supports_confidence_estimation import SupportsConfidenceEstimation
-from ssad.datamodules.dataset_with_confidence import DatasetWithConfidence, save_confidence_to_csv
-from ssad.distribution_analyzers.supports_distribution_analysis import SupportsDistributionAnalysis
+from ssad.confidence_estimators.supports_confidence_estimation import (
+    SupportsConfidenceEstimation,
+)
+from ssad.datamodules.dataset_with_confidence import (
+    DatasetWithConfidence,
+    save_confidence_to_csv,
+)
+from ssad.distribution_analyzers.supports_distribution_analysis import (
+    SupportsDistributionAnalysis,
+)
+
 
 def get_mlflow_logger(trainer: L.Trainer) -> Optional[MLFlowLogger]:
     """Safely get MLFlow logger from Trainer."""
@@ -98,8 +107,7 @@ def log_confidence_intervals(
         )
 
 
-
-def log_system_metrics(mlf_logger : MLFlowLogger, epoch):
+def log_system_metrics(mlf_logger: MLFlowLogger, epoch):
     """Logs CPU, RAM, and GPU usage metrics to MLflow."""
 
     # CPU Usage
@@ -109,25 +117,29 @@ def log_system_metrics(mlf_logger : MLFlowLogger, epoch):
     # GPU Usage (si CUDA disponible)
     if torch.cuda.is_available():
         gpu_id = 0  # Adapter si plusieurs GPUs
-        gpu_usage = torch.cuda.utilization(gpu_id) if hasattr(torch.cuda, 'utilization') else 0
+        gpu_usage = (
+            torch.cuda.utilization(gpu_id) if hasattr(torch.cuda, "utilization") else 0
+        )
         gpu_mem_alloc = torch.cuda.memory_allocated(gpu_id) / 1024**3  # En GB
         gpu_mem_reserved = torch.cuda.memory_reserved(gpu_id) / 1024**3  # En GB
     else:
         gpu_usage, gpu_mem_alloc, gpu_mem_reserved = 0, 0, 0
 
     # Log dans MLflow si logger actif
-    mlf_logger.log_metrics({
-        "cpu_usage_percent": cpu_usage,
-        "ram_usage_percent": ram_usage,
-        "gpu_usage_percent": gpu_usage,
-        "gpu_memory_allocated_gb": gpu_mem_alloc,
-        "gpu_memory_reserved_gb": gpu_mem_reserved,
-    }, step=epoch)
-
+    mlf_logger.log_metrics(
+        {
+            "cpu_usage_percent": cpu_usage,
+            "ram_usage_percent": ram_usage,
+            "gpu_usage_percent": gpu_usage,
+            "gpu_memory_allocated_gb": gpu_mem_alloc,
+            "gpu_memory_reserved_gb": gpu_mem_reserved,
+        },
+        step=epoch,
+    )
 
 
 def log_test_metrics(
-    metrics : dict,
+    metrics: dict,
     mlf_logger: MLFlowLogger,
     threshold: float,
 ) -> None:
@@ -140,4 +152,3 @@ def log_test_metrics(
         metrics,
         f"test_metrics_threshold={threshold}.json",
     )
-

@@ -46,7 +46,7 @@ class SelfSupervisionDataModule(L.LightningDataModule):
 
         # Prepare data, get input_dim from prepared data,
         # adapt the datamodule to add confidence data
-        #TODO fix: input dim is typed as int
+        # TODO fix: input dim is typed as int
         if (
             hasattr(self.datamodule, "train")
             and isinstance(self.datamodule.train, Dataset)
@@ -75,7 +75,7 @@ class SelfSupervisionDataModule(L.LightningDataModule):
         return DataLoader(dataset=self.train, batch_size=self.batch_size)
 
     def val_dataloader(self):
-        #return self.datamodule.val_dataloader()
+        # return self.datamodule.val_dataloader()
         return DataLoader(dataset=self.datamodule.val, batch_size=self.batch_size)
 
     def test_dataloader(self):

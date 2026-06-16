@@ -13,15 +13,20 @@ EVT-based thresholding supervisor using the Peaks-Over-Threshold (POT) approach.
 
 This module implements a supervisor strategy for confidence score calibration based on
 Extreme Value Theory (EVT). It identifies extreme values in the score distribution by
-modeling the tail using the Generalized Pareto Distribution (GPD) and separating 
+modeling the tail using the Generalized Pareto Distribution (GPD) and separating
 samples into three categories: nominal, unknown, and abnormal.
 """
+
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING, Any
+
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from scipy.stats import genpareto # type: ignore[import-untyped]
+from scipy.stats import genpareto  # type: ignore[import-untyped]
 
 from ssad.confidence_estimators.confidence_intervals_configuration import (
     ConfidenceIntervalsConfiguration,
@@ -30,19 +35,24 @@ from ssad.confidence_estimators.confidence_intervals_configuration import (
 
 from .supports_distribution_analysis import SupportsDistributionAnalysis
 
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+
 logger = logging.getLogger(__name__)
+
 
 class EVTThresholding(SupportsDistributionAnalysis):
     """
     Supervisor using the Peaks-Over-Threshold (POT) method from Extreme Value Theory (EVT).
 
-    This strategy models the tail of the score distribution with a Generalized Pareto 
-    Distribution (GPD) to detect extreme values (potential anomalies). It sets an initial 
+    This strategy models the tail of the score distribution with a Generalized Pareto
+    Distribution (GPD) to detect extreme values (potential anomalies). It sets an initial
     threshold u and a high threshold tq to define three regions in the data:
     - Normal: scores <= u
     - Unknown: u < scores <= tq
     - Abnormal: scores > tq
     """
+
     def __init__(self, alpha: float = 1.5, q: float = 0.001):
         """
         Initialize the EVTThresholding supervisor.
@@ -55,9 +65,8 @@ class EVTThresholding(SupportsDistributionAnalysis):
         self.q = q
         self.u = None
         self.tq = None
-        self.hist_counts = None
-        self.hist_edges = None
-
+        self.hist_counts: NDArray[np.int_] | None = None
+        self.bin_edges: NDArray[np.floating[Any]] | None = None
 
     @torch.no_grad()
     def analyze_distribution(self, scores_batch: torch.Tensor, current_conf):
@@ -71,23 +80,23 @@ class EVTThresholding(SupportsDistributionAnalysis):
 
         Args:
             scores_batch (torch.Tensor): A 1D tensor of scores (values ∈ [0, 1])
-            current_conf (Optional[ConfidenceIntervalsConfiguration]): 
+            current_conf (Optional[ConfidenceIntervalsConfiguration]):
                 Unused, kept for compatibility
 
         Returns:
-            ConfidenceIntervalsConfiguration: 
+            ConfidenceIntervalsConfiguration:
                 Object defining normal, abnormal, and unknown intervals
         """
         scores_np = scores_batch.cpu().numpy()
 
-        Q1 = np.percentile(scores_np, 25)       # pylint: disable=invalid-name
-        Q3 = np.percentile(scores_np, 75)       # pylint: disable=invalid-name
-        IQR = Q3 - Q1                           # pylint: disable=invalid-name
+        Q1 = np.percentile(scores_np, 25)  # pylint: disable=invalid-name
+        Q3 = np.percentile(scores_np, 75)  # pylint: disable=invalid-name
+        IQR = Q3 - Q1  # pylint: disable=invalid-name
         self.u = Q3 + self.alpha * IQR
         logger.info("limit u : %s", self.u)
 
         exceedances = scores_np[scores_np > self.u] - self.u
-        N = len(exceedances)                    # pylint: disable=invalid-name
+        N = len(exceedances)  # pylint: disable=invalid-name
         n = len(scores_np)
 
         if N == 0:
@@ -103,7 +112,7 @@ class EVTThresholding(SupportsDistributionAnalysis):
         logger.info("limit tq : %s", self.tq)
 
         # Save histogram for plotting
-        self.hist_counts, self.hist_edges = np.histogram(scores_np, bins="auto")
+        self.hist_counts, self.bin_edges = np.histogram(scores_np, bins="auto")
 
         # Define the intervals
         normal = Interval(left=0, right=self.u)
@@ -114,7 +123,9 @@ class EVTThresholding(SupportsDistributionAnalysis):
             normal=normal, abnormal=abnormal, unknown=unknown
         )
 
-    def plot_analysis(self, style="default", plot_size=(16, 8)) -> matplotlib.figure.Figure:
+    def plot_analysis(
+        self, style="default", plot_size=(16, 8)
+    ) -> matplotlib.figure.Figure:
         """
         Plot histogram of the score distribution with u and tq thresholds.
 
@@ -128,8 +139,8 @@ class EVTThresholding(SupportsDistributionAnalysis):
         with plt.style.context(style):
             fig, ax = plt.subplots(figsize=plot_size)
 
-            if self.hist_counts is not None and self.hist_edges is not None:
-                ax.stairs(self.hist_counts, self.hist_edges, label="Histogram")
+            if self.hist_counts is not None and self.bin_edges is not None:
+                ax.stairs(self.hist_counts, self.bin_edges, label="Histogram")
             if self.u is not None:
                 ax.axvline(self.u, color="orange", linestyle="--", label="Threshold u")
             if self.tq is not None:

@@ -20,9 +20,11 @@ Example:
     from logging_config import setup_logging
     setup_logging(level='DEBUG')
 """
+
 import logging.config
 
-def setup_logging(level='INFO'):
+
+def setup_logging(level="INFO"):
     """
     Configures the root logger with a console output and the specified log level.
 
@@ -32,25 +34,24 @@ def setup_logging(level='INFO'):
     The logger uses a simple format: [LEVEL]: message.
     Existing loggers are preserved and not disabled.
     """
-    LOGGING_CONFIG = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'standard': {
-                'format': '[%(levelname)s]: %(message)s in %(name)s',
-                #'%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+    config = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "[%(levelname)s]: %(message)s in %(name)s",
             },
         },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'standard',
-                'level': level,
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "standard",
+                "level": level,
             },
         },
-        'root': {
-            'handlers': ['console'],
-            'level': level,
+        "root": {
+            "handlers": ["console"],
+            "level": level,
         },
     }
-    logging.config.dictConfig(LOGGING_CONFIG)
+    logging.config.dictConfig(config)

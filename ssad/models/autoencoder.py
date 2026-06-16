@@ -11,7 +11,9 @@
 """
 Implementation of a fully connected feed-forward autoencoder
 """
-from typing import List, override, Optional
+
+from typing import List, Optional
+from typing_extensions import override
 import torch
 
 
@@ -57,10 +59,13 @@ class Autoencoder(torch.nn.Module):
         self.decoder = torch.nn.Sequential()
         for idx, layer_dim in enumerate(reverse_dims[:-1]):
             self.decoder.add_module(
-                f"decoder_linear_{idx}", torch.nn.Linear(layer_dim, reverse_dims[idx + 1])
+                f"decoder_linear_{idx}",
+                torch.nn.Linear(layer_dim, reverse_dims[idx + 1]),
             )
             if idx != (reverse_dims_len - 2):
-                self.decoder.add_module(f"decoder_relu_{idx}", torch.nn.ReLU(inplace=False))
+                self.decoder.add_module(
+                    f"decoder_relu_{idx}", torch.nn.ReLU(inplace=False)
+                )
 
         self.decoder.add_module("decoder_sigmoid", torch.nn.Sigmoid())
 

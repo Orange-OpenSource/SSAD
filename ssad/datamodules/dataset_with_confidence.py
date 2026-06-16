@@ -11,8 +11,6 @@
 """
 Defines the torch.Dataset specialization for
 pd.Datasets with a 'label' column
-
-
 """
 
 from collections.abc import Sized
@@ -48,7 +46,7 @@ class DatasetWithConfidence(Dataset):
         return self.dataset.__len__()
 
     def __getitem__(self, idx):
-        #TODO check if self.dataset[idx] is a tuple or a list
+        # TODO check if self.dataset[idx] is a tuple or a list
         # in case there is no label
         data = self.dataset[idx]
         return {

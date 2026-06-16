@@ -12,4 +12,3 @@
 Lightning data modules for traffic metadata reference datasets.
 
 """
-

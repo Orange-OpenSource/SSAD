@@ -40,7 +40,9 @@ set_config(transform_output="pandas")
 logger = logging.getLogger(__name__)
 
 
-class GeneralTabularDataModule(L.LightningDataModule):
+class GeneralTabularDataModule(
+    L.LightningDataModule
+):  # pylint: disable=too-many-instance-attributes
     """
     A LightningDataModule for tabular datasets with customizable preprocessing.
     Only destined for methods that do not take into account the temporal dependencies.
@@ -69,7 +71,7 @@ class GeneralTabularDataModule(L.LightningDataModule):
 
     pipeline: Pipeline
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         dataset_path: str,
         large_dataset: bool = False,
@@ -138,21 +140,21 @@ class GeneralTabularDataModule(L.LightningDataModule):
             replace_inf=self.replace_inf,
             fillna=self.fillna,
         )
-        # Construction des chemins
+        # paths
         base_name = f"{self.dataset_path.stem}_n={self.n_rows}_train={self.pa_train}-{self.p_train}_val={self.pa_val}-{self.p_val}_test={self.pa_test}"  # pylint: disable=line-too-long
         self.preprocessed_files = {
             "train": self.preprocessed_dir / f"{base_name}_train.csv",
             "validation": self.preprocessed_dir / f"{base_name}_val.csv",
             "test": self.preprocessed_dir / f"{base_name}_test.csv",
         }
-        self.train = None
-        self.val = None
-        self.test = None
+        self.train: Optional[DataFrameWithLabels] = None
+        self.val: Optional[DataFrameWithLabels] = None
+        self.test: Optional[DataFrameWithLabels] = None
 
     def prepare_data(self):
         pass
 
-    def setup(self, stage=None):
+    def setup(self, stage=None):  # pylint: disable=unused-argument
         if all(p.exists() for p in self.preprocessed_files.values()):
             logger.info("🔄 Loading preprocessed files.")
             train = pd.read_csv(self.preprocessed_files["train"])
@@ -292,12 +294,18 @@ class GeneralTabularDataModule(L.LightningDataModule):
         )
 
     def train_dataloader(self):
+        if self.train is None:
+            raise ValueError("Cannot create dataloader, training set is None")
         return DataLoader(self.train, batch_size=self.batch_size)
 
     def val_dataloader(self):
+        if self.val is None:
+            raise ValueError("Cannot create dataloader, validation set is None")
         return DataLoader(self.val, batch_size=self.batch_size)
 
     def test_dataloader(self):
+        if self.test is None:
+            raise ValueError("Cannot create dataloader, testing set is None")
         return DataLoader(self.test, batch_size=self.batch_size)
 
     def save_preprocessed_data(

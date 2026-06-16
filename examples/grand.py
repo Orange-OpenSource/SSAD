@@ -8,51 +8,55 @@
 # Authors: see CONTRIBUTORS
 # Software description: A Python library for autoencoder-based anomaly detection
 #          based on self-supervised training with dynamic sample confidence updates.
-""" 
+"""
 Implementation of the GRAnD model using the SSAD library.
 
-N. Najari, S. Berlemont, G. Lefebvre, S. Duffner, et C. Garcia, « Robust Variational Autoencoders and Normalizing Flows for Unsupervised Network Anomaly Detection », in Advanced Information Networking and Applications, vol. 450, L. Barolli, F. Hussain, et T. Enokido, Éd., in Lecture Notes in Networks and Systems, vol. 450. , Cham: Springer International Publishing, 2022, p. 281-292. doi: 10.1007/978-3-030-99587-4_24.
+N. Najari, S. Berlemont, G. Lefebvre, S. Duffner, et C. Garcia,
+« Robust Variational Autoencoders and Normalizing Flows for
+Unsupervised Network Anomaly Detection », in Advanced Information Networking and Applications,
+vol. 450, L. Barolli, F. Hussain, et T. Enokido, Éd., in Lecture Notes in Networks and Systems,
+vol. 450. , Cham: Springer International Publishing, 2022,p. 281-292.
+doi: 10.1007/978-3-030-99587-4_24.
 
 """
-import os
-from datetime import datetime
-import logging
 
-import pytz
-import torch
+import logging
+import os
+
 import lightning as L
+import torch
+from datasets.mnist import MNISTAnomalyDataModule
 from lightning.pytorch.loggers import MLFlowLogger
+from utils import run_name
 
 import ssad
-from datasets.mnist import MNISTAnomalyDataModule
 
-
-batch_size = 256
-n_rows=5000
-p_train=0.4
-p_val=0.1
-pa_train=0.1
-pa_val=0.5
-pa_test=0.5
-
-LOG_LEVEL = "WARNING" # INFO -- WARNING -- ERROR
 DATASET_NAME = "MNIST"
 MODEL_NAME = "GRAnD"
-
+RUN_NAME = run_name(DATASET_NAME)
+ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+LOG_LEVEL = "WARNING"  # INFO -- WARNING -- ERROR
+RANDOM_STATE = 42
 ssad.setup_logging(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
-def format_run_name(dt: datetime):
-    tz = dt.strftime("%z")
-    tz_colon = f"{tz[:3]}:{tz[3:]}" if tz else ""
-    return DATASET_NAME + " " + dt.strftime(f"%Y-%m-%d at %H:%M:%S ({tz_colon})")
-
-utc_datetime = datetime.now(pytz.timezone("UTC"))
-run_name = format_run_name(utc_datetime)
-
-
-ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+# cf. ssad.GeneralTabularDatamodule
+#   p_train (float): Proportion of total data for training.
+#   p_val (float): Proportion of total data for validation.
+#   pa_train (float): Proportion of anomalies in training set.
+#   pa_val (float): Proportion of anomalies in validation set.
+#   pa_test (float): Proportion of anomalies in test set.
+#   n_rows (Optional[int], optional): Total number of data points to include.
+#        Defaults to dataset size.
+#        Limits the dataset size by restricting the total number of rows to n_rows if specified.
+BATCH_SIZE = 256
+N_ROWS = 5000
+P_TRAIN = 0.4
+P_VAL = 0.1
+PA_TRAIN = 0.1
+PA_VAL = 0.5
+PA_TEST = 0.5
 
 torch.set_float32_matmul_precision("high")
 
@@ -61,16 +65,16 @@ data = ssad.SelfSupervisionDataModule(
         dataset_path=f"{ROOT_DIR}/data/MNIST/MNIST_original",
         preprocessed_dir=f"{ROOT_DIR}/data/MNIST/MNIST_processed",
         label_column="label",
-        batch_size=batch_size,
-        n_rows=n_rows,
-        p_train=p_train,
-        p_val=p_val,
-        pa_train=pa_train,
-        pa_val=pa_val,
-        pa_test=pa_test,
+        batch_size=BATCH_SIZE,
+        n_rows=N_ROWS,
+        p_train=P_TRAIN,
+        p_val=P_VAL,
+        pa_train=PA_TRAIN,
+        pa_val=PA_VAL,
+        pa_test=PA_TEST,
         transform=ssad.DataFrameToTensor(),
         target_transform=ssad.DataFrameToTensor(),
-        random_state=42,
+        random_state=RANDOM_STATE,
     )
 )
 
@@ -87,7 +91,7 @@ model = ssad.FreeEnergyScoringModule(
     distr_analyzer=ssad.EVTThresholding(),
 )
 
-L.seed_everything(42, workers = True)
+L.seed_everything(RANDOM_STATE, workers=True)
 
 trainer = L.Trainer(
     max_epochs=10,
@@ -96,7 +100,7 @@ trainer = L.Trainer(
     precision=16,
     logger=MLFlowLogger(
         experiment_name=MODEL_NAME,
-        run_name=run_name,
+        run_name=RUN_NAME,
         log_model=True,
         tracking_uri=f"file:{ROOT_DIR}/ml-runs",
     ),

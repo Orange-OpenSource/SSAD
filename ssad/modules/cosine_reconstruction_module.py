@@ -15,18 +15,14 @@ Normal samples reconstructions should be collinear with the original samples.
 Abnormal samples reconstructions should be orthogonal to the original samples.
 """
 
-# import warnings
 from typing import List
 import logging
 import torch
 
-# # use of prototype masked tensor API, may require maintenance down the road
+# TODO: check if we can use the masked tensor API
 # from torch.masked import MaskedTensor
 
 from .self_supervision_module import SelfSupervisionModule
-
-# # Disable prototype warnings and such
-# warnings.filterwarnings(action="ignore", category=UserWarning)
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +80,7 @@ class CosineReconstructionModule(SelfSupervisionModule):
     def _negative_loss(self, data, confidence):
         score = self.score(data)
         return confidence.abs() * score**2
-    
+
     def _uncertain_loss(self, data, confidence):
         pass
 
@@ -97,9 +93,13 @@ class CosineReconstructionModule(SelfSupervisionModule):
         if self.threshold_strategy == "auto":
             config = getattr(self.confidence_estimator, "configuration", None)
             if config is not None:
-                return [1 - float(config.abnormal.right), 1 - float(config.normal.left), self.manual_threshold]
+                return [
+                    1 - float(config.abnormal.right),
+                    1 - float(config.normal.left),
+                    self.manual_threshold,
+                ]
             logger.warning(
-                "'auto' strategy selected but confidence intervals are missing or invalid. "
-                "Falling back to manual threshold."
+                "'auto' strategy selected but confidence intervals are missing "
+                "or invalid. Falling back to manual threshold."
             )
         return [self.manual_threshold]

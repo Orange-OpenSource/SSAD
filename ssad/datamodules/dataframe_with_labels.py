@@ -12,9 +12,9 @@
 Defines the torch.Dataset specialization for
 pd.Datasets with a 'label' column
 """
+
 import torch
 from torch.utils.data import Dataset
-
 
 
 class DataFrameWithLabels(Dataset):
@@ -36,8 +36,8 @@ class DataFrameWithLabels(Dataset):
         labels = data[label_column_name]
         features = data.drop(columns=[label_column_name])
 
-        self.data = torch.tensor(features.values, dtype = torch.float32)
-        self.labels = torch.tensor(labels.values, dtype = torch.float32)
+        self.data = torch.tensor(features.values, dtype=torch.float32)
+        self.labels = torch.tensor(labels.values, dtype=torch.float32)
 
         self.transform = transform
         self.target_transform = target_transform
@@ -64,10 +64,10 @@ class DataFrameWithLabels(Dataset):
         Returns:
             int: length of the dataset samples
         """
-        #return len(self.data.columns)
+        # return len(self.data.columns)
         return self.data.shape[1]
 
-    def collate(self, batch : torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    def collate(self, batch: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Collate function, used to transform a batch into a tensor
 
         Args:
@@ -80,7 +80,7 @@ class DataFrameWithLabels(Dataset):
         data_tensor = torch.stack(data)
         labels_tensor = torch.stack(labels)
         return data_tensor, labels_tensor
-    
+
     def get_stats(self) -> tuple:
         """
         Returns the total number of samples, number of normal samples, and number of anomalies.

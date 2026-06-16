@@ -89,7 +89,7 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
             abnormal_confidences,
             confidence,
         )
-        
+
         # TODO unknown???
 
         return confidence

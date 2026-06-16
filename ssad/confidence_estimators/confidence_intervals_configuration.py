@@ -28,7 +28,8 @@ class Interval(pd.Interval):
     """
 
     def contains_tensor_mask(self, item: torch.Tensor) -> torch.Tensor:
-        """Computes the mask corresponding to the tensor indexes with a value contained within the interval.
+        """Computes the mask corresponding to the tensor indexes
+        with a value contained within the interval.
 
         Args:
             item (torch.Tensor): tensor whose mask is to be computed

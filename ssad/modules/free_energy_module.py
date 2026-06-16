@@ -29,6 +29,7 @@ from .self_supervision_module import SelfSupervisionModule
 
 logger = logging.getLogger(__name__)
 
+
 class FreeEnergyScoringModule(SelfSupervisionModule):
     """
     Implements a free energy scoring module for VAE.
@@ -36,7 +37,7 @@ class FreeEnergyScoringModule(SelfSupervisionModule):
         F(x) = reconstruction_error(x, x_hat) + KL_divergence
     """
 
-    def __init__(
+    def __init__( # pylint: disable=too-many-positional-arguments
         self,
         model: nn.Module,
         m: int,
@@ -88,7 +89,7 @@ class FreeEnergyScoringModule(SelfSupervisionModule):
             #     logger.warning("KL Div Mean is Negative")
             # free_energy = recon_error + kl_scalar  # broadcast → [B]
 
-            if self.counter % 50 == 0 :
+            if self.counter % 50 == 0:
                 logger.info("data size : %s", data.size(0))
                 logger.info("MIN reconstruction Error: %s", recon_error.min().item())
                 logger.info("MIN KL Divergence : %s", kl_div.min().item())
@@ -98,17 +99,32 @@ class FreeEnergyScoringModule(SelfSupervisionModule):
             if free_energy.min().item() < 0:
                 num_negatives = (free_energy < 0).sum().item()
                 percent_neg = num_negatives * 100 / free_energy.numel()
-                logger.warning("Free Energy: %s%% of items are negative (%s out of %s)", percent_neg, num_negatives, free_energy.numel())
+                logger.warning(
+                    "Free Energy: %s%% of items are negative (%s out of %s)",
+                    percent_neg,
+                    num_negatives,
+                    free_energy.numel(),
+                )
 
             if recon_error.min().item() < 0:
                 num_negatives_recon = (recon_error < 0).sum().item()
                 percent_neg_recon = num_negatives_recon * 100 / recon_error.numel()
-                logger.warning("Recon Error: %s%% of items are negative (%s out of %s)", percent_neg_recon, num_negatives_recon, recon_error.numel())
+                logger.warning(
+                    "Recon Error: %s%% of items are negative (%s out of %s)",
+                    percent_neg_recon,
+                    num_negatives_recon,
+                    recon_error.numel(),
+                )
 
             if kl_div.min().item() < 0:
                 num_negatives_kl = (kl_div < 0).sum().item()
                 percent_neg_kl = num_negatives_kl * 100 / kl_div.numel()
-                logger.warning("KL Div: %s%% of items are negative (%s out of %s)", percent_neg_kl, num_negatives_kl, kl_div.numel())
+                logger.warning(
+                    "KL Div: %s%% of items are negative (%s out of %s)",
+                    percent_neg_kl,
+                    num_negatives_kl,
+                    kl_div.numel(),
+                )
 
             return free_energy
 
@@ -162,9 +178,9 @@ class FreeEnergyScoringModule(SelfSupervisionModule):
         scores = self.score(data)
         sorted_scores = scores.sort().values
         # eCDF(xi) = (1/n) * sum_j 1_{xj <= xi}
-        ecdf = torch.searchsorted(
-            sorted_scores, scores, right=True
-        ).float() / len(scores)
+        ecdf = torch.searchsorted(sorted_scores, scores, right=True).float() / len(
+            scores
+        )
         loss_uncertain = ecdf * abs(self.m - scores)
         return loss_uncertain
 
@@ -176,7 +192,11 @@ class FreeEnergyScoringModule(SelfSupervisionModule):
         if self.threshold_strategy == "auto":
             config = getattr(self.confidence_estimator, "configuration", None)
             if config is not None:
-                return [float(config.abnormal.left), float(config.normal.right), (float(config.abnormal.left) + float(config.normal.right))/2]
+                return [
+                    float(config.abnormal.left),
+                    float(config.normal.right),
+                    (float(config.abnormal.left) + float(config.normal.right)) / 2,
+                ]
             logger.warning(
                 "'auto' strategy selected but confidence intervals are missing or invalid. "
                 "Falling back to manual threshold."

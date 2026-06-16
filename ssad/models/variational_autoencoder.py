@@ -12,16 +12,18 @@
 Implementation of a feed-forward, fully-connected variational autoencoder
 """
 
-from typing import List
 import logging
+from typing import List
+
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
 
 logger = logging.getLogger(__name__)
 LOG2PI = torch.log(torch.tensor(2.0 * torch.pi))
 
-class VariationalAutoencoder(nn.Module):
+
+class VariationalAutoencoder(nn.Module):  # pylint: disable=too-many-instance-attributes
     """
     Variational Autoencoder with Normalizing Flows for enhanced posterior flexibility.
 
@@ -40,8 +42,8 @@ class VariationalAutoencoder(nn.Module):
         encoder_dims: List[int],
         latent_dim: int,
         min_logvar: float = -20.0,
-        max_logvar: float =  2.0
-    ):
+        max_logvar: float = 2.0,
+    ):  # pylint: disable=too-many-positional-arguments
         """
         Initializes the VAE architecture.
 
@@ -52,7 +54,7 @@ class VariationalAutoencoder(nn.Module):
             latent_dim (int): Size of the latent representation.
         """
 
-        super(VariationalAutoencoder, self).__init__()
+        super().__init__()
 
         if latent_dim <= 0:
             raise ValueError(f"Wrong embedding dimension: {latent_dim}")
@@ -119,7 +121,7 @@ class VariationalAutoencoder(nn.Module):
         encoded = self.encoder(x)
         mu = self.mu_layer(encoded)
         logvar = self.logvar_layer(encoded)
-        logvar  = torch.clamp(logvar, self.min_logvar, self.max_logvar)
+        logvar = torch.clamp(logvar, self.min_logvar, self.max_logvar)
         return mu, logvar
 
     @staticmethod
@@ -127,12 +129,12 @@ class VariationalAutoencoder(nn.Module):
         """
         Lifts values below *min_kl* without blocking gradients.
 
-        If kl_raw >= min_kl   -> unchanged  
+        If kl_raw >= min_kl   -> unchanged
         If kl_raw <  min_kl   -> returns *min_kl* but keeps the original gradient.
         """
         return kl_raw + (kl_raw < min_kl).float() * (min_kl - kl_raw.detach())
 
-    def _kl_divergence(
+    def _kl_divergence(  # pylint: disable=unused-argument,too-many-positional-arguments
         self,
         mu: torch.Tensor,
         logvar: torch.Tensor,
@@ -176,27 +178,33 @@ class VariationalAutoencoder(nn.Module):
         # print("\n methode 1 : ", kl_raw.mean())
 
         # # # Method 2
-        # log_prior_zk = (torch.distributions.normal.Normal(0.0, 1.0).log_prob(zk).sum(dim=1))  # p(zᴋ)
+        # log_prior_zk = (torch.distributions.normal.Normal(0.0, 1.0).log_prob(zk).sum(dim=1))
         # log_prior_z0 = (torch.distributions.Normal(0.0, 1.0).log_prob(z0).sum(-1))  # p(z₀)
         # norm_diff = log_prior_z0 - log_prior_zk
         # kl_raw = kl_gauss + flow_jac + norm_diff
         # print("\n methode 2 : ", kl_raw.mean())
 
         # # # Method 3
-        # log_q0_z0 = (torch.distributions.normal.Normal(mu, (0.5 * logvar).exp()).log_prob(z0).sum(dim=1))
-        # log_prior_zk = (torch.distributions.normal.Normal(0.0, 1.0).log_prob(zk).sum(dim=1))  # p(zᴋ)
+        # log_q0_z0 = (
+        #   torch.distributions.normal.Normal(
+        #       mu,
+        #       (0.5 * logvar).exp()
+        #   )
+        #   .log_prob(z0)
+        #   .sum(dim=1)
+        # )
+        # log_prior_zk = (torch.distributions.normal.Normal(0.0, 1.0).log_prob(zk).sum(dim=1))
         # log_qk_zk = log_q0_z0 - log_det
         # kl_raw = log_qk_zk - log_prior_zk
         # print("\n methode 3 : ", kl_raw.mean())
 
-        # Method 4 
-        log_q0 = -0.5 * ((eps ** 2) + LOG2PI + logvar).sum(dim=1) 
-        log_pz = -0.5 * ((zk ** 2) + LOG2PI).sum(dim=1)
+        # Method 4
+        log_q0 = -0.5 * ((eps**2) + LOG2PI + logvar).sum(dim=1)
+        log_pz = -0.5 * ((zk**2) + LOG2PI).sum(dim=1)
         kl_raw = log_q0 - log_pz - log_det
 
-        #return kl_raw
+        # return kl_raw
         return self._kl_safe(kl_raw, min_kl=min_kl)
-
 
     def sample_from_normal_distribution(self, mu, logvar):
         """
@@ -250,11 +258,11 @@ class VariationalAutoencoder(nn.Module):
         """
 
         # 1. Encoder : get latent distribution parameters µ and log σ²
-        mu, logvar          = self.encode(x.view(-1, self.input_dim))           # (B, D)
-        z0, eps             = self.sample_from_normal_distribution(mu, logvar)  # (B, D)
-        zk, log_det_jakob   = self.normalizing_flow(z0)                         # (B, D) & (B,)
-        kl_div              = self._kl_divergence(mu, logvar, eps, z0, zk, log_det_jakob)
-        x_hat               = self.decode(zk)
+        mu, logvar = self.encode(x.view(-1, self.input_dim))  # (B, D)
+        z0, eps = self.sample_from_normal_distribution(mu, logvar)  # (B, D)
+        zk, log_det_jakob = self.normalizing_flow(z0)  # (B, D) & (B,)
+        kl_div = self._kl_divergence(mu, logvar, eps, z0, zk, log_det_jakob)
+        x_hat = self.decode(zk)
         return x_hat, zk, kl_div
 
 
@@ -299,7 +307,7 @@ class PlanarFlow(Flow):
         Args:
             dim (int): Dimension of the latent space.
         """
-        super(PlanarFlow, self).__init__()
+        super().__init__()
         self.u = nn.Parameter(torch.Tensor(1, dim))
         self.w = nn.Parameter(torch.Tensor(1, dim))
         self.b = nn.Parameter(torch.Tensor(1))
@@ -317,14 +325,14 @@ class PlanarFlow(Flow):
                 - Transformed latent variable,
                 - Log absolute determinant of the Jacobian.
         """
-        linear = F.linear(z, self.w, self.b)          # w·z + b ; pylint: disable=not-callable
-        tanh   = torch.tanh(linear)
-        z_new  = z + self.u * tanh
+        linear = F.linear(z, self.w, self.b)  # w·z + b ; pylint: disable=not-callable
+        tanh = torch.tanh(linear)
+        z_new = z + self.u * tanh
 
-        psi    = self.w * (1 - tanh ** 2)             # w ⊙ (1 − tanh²)
-        det_j  = 1 + torch.mm(psi, self.u.t())        # scalar per sample
+        psi = self.w * (1 - tanh**2)  # w ⊙ (1 − tanh²)
+        det_j = 1 + torch.mm(psi, self.u.t())  # scalar per sample
 
-        eps    = 1e-6 # 1e-9
+        eps = 1e-6  # 1e-9
         logdet = torch.log(det_j.abs() + eps).squeeze(1)  # [B]
         return z_new, logdet
 

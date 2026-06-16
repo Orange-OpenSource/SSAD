@@ -51,7 +51,7 @@ class MNISTAnomalyDataModule(ssad.GeneralTabularDataModule):
         n_rows: Optional[int] = None,
         preprocessed_dir: Optional[str] = f"{PATH_DATASETS}/MNIST/MNIST_processed",
         normal_labels: Union[List, int] = 4,
-        anomaly_labels: Union[List, int] = [i for i in range(10) if i != 4],
+        anomaly_labels: Optional[Union[List[int], int]] = None,
         categorical_cols: Optional[List[str]] = None,
         drop_cols: Optional[List[str]] = None,
         count_encode_cols: Optional[List[str]] = None,
@@ -73,6 +73,10 @@ class MNISTAnomalyDataModule(ssad.GeneralTabularDataModule):
             **kwargs: Additional arguments passed to GeneralTabularDataModule
         """
         # Set up paths
+        
+        if anomaly_labels is None:
+            anomaly_labels = [i for i in range(10) if i != 4]
+            
         self.raw_dataset_path = Path(dataset_path)
         self.combined_path = self.raw_dataset_path.parent / "combined_data"
         self.csv_path = self.combined_path / "mnist_flattened.csv"

@@ -18,8 +18,7 @@ import logging
 import os
 import numpy as np
 import pandas as pd
-from sklearn.utils import shuffle # type: ignore[import-untyped]
-
+from sklearn.utils import shuffle  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 
@@ -123,12 +122,12 @@ def controlled_split(
     pa_test: float,
     n_rows: Optional[int] = None,
     random_state: int = 42,
-    shuffling = False
-):
+    shuffling=False,
+):  # pylint: disable=too-many-locals,too-many-positional-arguments
     """
     Splits a DataFrame into training, validation, and test sets with controlled class proportions.
     Only use for time-independent methods, as temporal dependencies are not respected.
-    
+
     Args:
         df (pd.DataFrame): Input DataFrame containing the data.
         label_column (str): Name of the column indicating class labels.
@@ -161,7 +160,7 @@ def controlled_split(
     # Dataset shape
     total_requested = min(
         n_rows if n_rows is not None else available_anomalies + available_normals,
-        available_anomalies + available_normals
+        available_anomalies + available_normals,
     )
 
     # Total Splits
@@ -191,7 +190,7 @@ def controlled_split(
         logger.error(
             "❌ Requested %s anomalies, but only %s are available.",
             formatted_needed_anomalies,
-            formatted_available_anomalies
+            formatted_available_anomalies,
         )
         raise ValueError("Requested anomaly count exceeds available data.")
 
@@ -201,25 +200,35 @@ def controlled_split(
         logger.error(
             "❌ Requested %s normal samples, but only %s are available.",
             formatted_needed_normals,
-            formatted_available_normals
+            formatted_available_normals,
         )
         raise ValueError("Requested normal sample count exceeds available data.")
 
     # Final Selection
     anomalies_train = anomalies.iloc[:m_train]
-    anomalies_val = anomalies.iloc[m_train:m_train + m_val]
-    anomalies_test = anomalies.iloc[m_train + m_val:m_train + m_val + m_test]
+    anomalies_val = anomalies.iloc[m_train : m_train + m_val]
+    anomalies_test = anomalies.iloc[m_train + m_val : m_train + m_val + m_test]
 
-    normals_train = normals.iloc[:n_train - m_train]
-    normals_val = normals.iloc[n_train - m_train:n_train - m_train + n_val - m_val]
-    normals_test = normals.iloc[n_train - m_train + n_val - m_val:
-                                n_train - m_train + n_val - m_val + n_test - m_test]
+    normals_train = normals.iloc[: n_train - m_train]
+    normals_val = normals.iloc[n_train - m_train : n_train - m_train + n_val - m_val]
+    normals_test = normals.iloc[
+        n_train
+        - m_train
+        + n_val
+        - m_val : n_train
+        - m_train
+        + n_val
+        - m_val
+        + n_test
+        - m_test
+    ]
 
     train = pd.concat([anomalies_train, normals_train])
     val = pd.concat([anomalies_val, normals_val])
     test = pd.concat([anomalies_test, normals_test])
 
     return train, val, test
+
 
 def controlled_split_from_index_file(
     df: pd.DataFrame,
@@ -231,8 +240,8 @@ def controlled_split_from_index_file(
     pa_test: float,
     n_rows: Optional[int] = None,
     random_state: int = 42,
-    shuffling = False
-):
+    shuffling=False,
+):  # pylint: disable=too-many-locals,too-many-positional-arguments
     """
     Generates train, validation, and test index lists from an index CSV file
     with controlled class proportions.
@@ -245,7 +254,7 @@ def controlled_split_from_index_file(
         pa_train (float): Proportion of anomalies in training set.
         pa_val (float): Proportion of anomalies in validation set.
         pa_test (float): Proportion of anomalies in test set.
-        n_rows (Optional[int], optional): Total number of data points to include. 
+        n_rows (Optional[int], optional): Total number of data points to include.
             Defaults to dataset size.
             Limits the dataset size by restricting the total number of rows to n_rows if specified.
         random_state (int, optional): Seed for reproducibility.
@@ -269,7 +278,7 @@ def controlled_split_from_index_file(
     available_normals = len(normals)
     total_requested = min(
         n_rows if n_rows is not None else available_anomalies + available_normals,
-        available_anomalies + available_normals
+        available_anomalies + available_normals,
     )
 
     # compute the number of samples in each set, using the given proportions
@@ -299,7 +308,7 @@ def controlled_split_from_index_file(
         logger.error(
             "❌ Requested %s anomalies, but only %s are available.",
             formatted_needed_anomalies,
-            formatted_available_anomalies
+            formatted_available_anomalies,
         )
         raise ValueError("Requested anomaly count exceeds available data.")
 
@@ -309,24 +318,29 @@ def controlled_split_from_index_file(
         logger.error(
             "❌ Requested %s normal samples, but only %s are available.",
             formatted_needed_normals,
-            formatted_available_normals
+            formatted_available_normals,
         )
         raise ValueError("Requested normal sample count exceeds available data.")
 
-
-
-    anomalies_idx = anomalies['index'].values
-    normals_idx = normals['index'].values
+    anomalies_idx = anomalies["index"].values
+    normals_idx = normals["index"].values
 
     anomalies_train = anomalies_idx[:m_train]
-    anomalies_val = anomalies_idx[m_train:m_train + m_val]
-    anomalies_test = anomalies_idx[m_train + m_val:m_train + m_val + m_test]
+    anomalies_val = anomalies_idx[m_train : m_train + m_val]
+    anomalies_test = anomalies_idx[m_train + m_val : m_train + m_val + m_test]
 
-    normals_train = normals_idx[:n_train - m_train]
-    normals_val = normals_idx[n_train - m_train:n_train - m_train + n_val - m_val]
+    normals_train = normals_idx[: n_train - m_train]
+    normals_val = normals_idx[n_train - m_train : n_train - m_train + n_val - m_val]
     normals_test = normals_idx[
-        n_train - m_train + n_val - m_val :
-        n_train - m_train + n_val - m_val + n_test - m_test
+        n_train
+        - m_train
+        + n_val
+        - m_val : n_train
+        - m_train
+        + n_val
+        - m_val
+        + n_test
+        - m_test
     ]
 
     train_idx = list(anomalies_train) + list(normals_train)
@@ -336,7 +350,9 @@ def controlled_split_from_index_file(
     return train_idx, val_idx, test_idx
 
 
-def generate_label_index_file(path_csv, label_column, path_index_file, chunksize=100_000):
+def generate_label_index_file(
+    path_csv, label_column, path_index_file, chunksize=100_000
+):
     """
     Creates an index file mapping data indices to label values from a CSV file.
     The function reads the CSV file in chunks of size `chunksize` to handle large files efficiently.
@@ -350,11 +366,15 @@ def generate_label_index_file(path_csv, label_column, path_index_file, chunksize
     logger.info("🔄 Creating index file at %s...", path_index_file)
     indices = []
     for chunk in pd.read_csv(path_csv, chunksize=chunksize, usecols=[label_column]):
-        idx_start = chunk.index.start if hasattr(chunk.index, 'start') else 0
-        indices.append(pd.DataFrame({
-            'index': range(idx_start, idx_start + len(chunk)),
-            label_column: chunk[label_column].values
-        }))
+        idx_start = chunk.index.start if hasattr(chunk.index, "start") else 0
+        indices.append(
+            pd.DataFrame(
+                {
+                    "index": range(idx_start, idx_start + len(chunk)),
+                    label_column: chunk[label_column].values,
+                }
+            )
+        )
     index_df = pd.concat(indices, ignore_index=True)
     index_df.to_csv(path_index_file, index=False)
     logger.info("✅ Index file created at %s", path_index_file)
@@ -383,7 +403,7 @@ def encode_labels_inplace(
     df: pd.DataFrame,
     label_column: str,
     normal_labels: Union[List, int],
-    anomaly_labels: Union[List, int]
+    anomaly_labels: Union[List, int],
 ):
     """
     Encode label values in the DataFrame's 'label' column to 0 for normal and 1 for anomalies.
@@ -391,8 +411,10 @@ def encode_labels_inplace(
 
     Args:
         df (pd.DataFrame): The DataFrame containing a 'label' column.
-        normal_labels (Union[List, int]): List of values or a single value representing normal samples.
-        anomaly_labels (Union[List, int]): List of values or a single value representing anomalous samples.
+        normal_labels (Union[List, int]): List of values or a single value
+                                          representing normal samples.
+        anomaly_labels (Union[List, int]): List of values or a single value
+                                           representing anomalous samples.
     """
     # Convert to list if a single int is provided
     if isinstance(normal_labels, int):
