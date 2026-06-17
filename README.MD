@@ -20,6 +20,18 @@ NB: examples are proposed in the [examples folder](examples). They correspond to
 
 ---
 
+## Installation
+
+'''
+pip install -e .
+'''
+
+or, to launch examples,
+
+'''
+pip install -e .[dev]
+'''
+
 ## High-Level Architecture
 
 The codebase is split into focused modules:

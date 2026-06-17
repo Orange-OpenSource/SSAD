@@ -41,9 +41,9 @@ class HybridEstimator(SupportsConfidenceEstimation):
         self.training_dataset = training_dataset
         self.estimators = estimators
 
-    def update_training_confidence(self):
-        confidence = torch.FloatTensor(torch.zeros(len(self.training_dataset)))
+    def estimate_confidence(self, scores_batch: torch.Tensor):
+        confidence = torch.Tensor(torch.zeros(len(self.training_dataset)))
         for idx, estimator in enumerate(self.estimators):
-            confidence_estimator = estimator.batch_confidence()
-            confidence += self.weights[idx] * confidence_estimator
+            estimator_confidence = estimator.estimate_confidence(scores_batch)
+            confidence += self.weights[idx] * estimator_confidence
         return confidence

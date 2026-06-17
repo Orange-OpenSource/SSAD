@@ -8,7 +8,7 @@
 # Authors: see CONTRIBUTORS
 # Software description: A Python library for autoencoder-based anomaly detection
 #          based on self-supervised training with dynamic sample confidence updates.
-from typing import Protocol, Any, runtime_checkable
+from typing import Protocol, Any, Tuple, runtime_checkable
 
 
 @runtime_checkable
@@ -21,6 +21,10 @@ class DatasetWithLabels(Protocol):
 
     labels: Any
     data: Any
+
+    def __len__(self) -> int: ...
+
+    def __getitem__(self, idx: int) -> Tuple[Any, Any]: ...
 
 
 @runtime_checkable

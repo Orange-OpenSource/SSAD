@@ -70,6 +70,7 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
         Returns:
             torch.Tensor: confidence score
         """
+        # TODO: check this order of computation
         confidence = self._confidence_unknown(scores_batch)
 
         if self.configuration is None:
@@ -89,7 +90,5 @@ class BaseConfidenceEstimator(ABC, SupportsConfidenceEstimation):
             abnormal_confidences,
             confidence,
         )
-
-        # TODO unknown???
 
         return confidence

@@ -71,16 +71,16 @@ class SelfSupervisionDataModule(L.LightningDataModule):
         self.datamodule.setup(stage)
 
     def train_dataloader(self):
-        # Try Adding num_workers=os.cpu_count(), pin_memory=True, persistent_workers=True
+        # TODO: Try Adding num_workers=os.cpu_count(), pin_memory=True, persistent_workers=True
         return DataLoader(dataset=self.train, batch_size=self.batch_size)
 
     def val_dataloader(self):
-        # return self.datamodule.val_dataloader()
-        return DataLoader(dataset=self.datamodule.val, batch_size=self.batch_size)
+        return self.datamodule.val_dataloader()
+        # return DataLoader(dataset=self.datamodule.val, batch_size=self.batch_size)
 
     def test_dataloader(self):
-        # return self.datamodule.test_dataloader()
-        return DataLoader(dataset=self.datamodule.test, batch_size=self.batch_size)
+        return self.datamodule.test_dataloader()
+        # return DataLoader(dataset=self.datamodule.test, batch_size=self.batch_size)
 
     def supervision_dataloader(self) -> DataLoader:
         """Dataloader used during supervision.
