@@ -15,6 +15,8 @@ Rosin, Paul. (2001). Unimodal thresholding. Pattern Recognition. 34. 2083-2096.
 10.1016/S0031-3203(00)00136-9.
 """
 
+# pylint: disable=duplicate-code
+# Plotting logic is intentionally similar across analyzers to keep implementations independent.
 from __future__ import annotations
 
 from math import lgamma

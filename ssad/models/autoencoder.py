@@ -12,6 +12,8 @@
 Implementation of a fully connected feed-forward autoencoder
 """
 
+# pylint: disable=duplicate-code
+# Init logic is intentionally similar across autoencoders to keep implementations independent.
 from typing import List, Optional
 from typing_extensions import override
 import torch

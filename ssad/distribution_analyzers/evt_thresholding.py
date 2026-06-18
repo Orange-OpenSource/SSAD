@@ -17,6 +17,9 @@ modeling the tail using the Generalized Pareto Distribution (GPD) and separating
 samples into three categories: nominal, unknown, and abnormal.
 """
 
+
+# pylint: disable=duplicate-code
+# Plotting logic is intentionally similar across analyzers to keep implementations independent.
 from __future__ import annotations
 
 import logging

@@ -12,6 +12,8 @@
 Implementation of a feed-forward, fully-connected variational autoencoder
 """
 
+# pylint: disable=duplicate-code
+# Init logic is intentionally similar across autoencoders to keep implementations independent.
 import logging
 from typing import List
 
