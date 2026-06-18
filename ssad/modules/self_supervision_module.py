@@ -303,7 +303,13 @@ class SelfSupervisionModule(
         # return self.criterion(self.model.forward(batch), batch)
 
     def configure_callbacks(self) -> Union[Sequence[L.Callback], L.Callback]:
-        return SelfSupervisionCallback()
+        trainer_callbacks = getattr(self.trainer, "callbacks", []) if self.trainer else []
+        already_present = any(isinstance(cb, SelfSupervisionCallback) for cb in trainer_callbacks)
+
+        if already_present:
+            return []
+
+        return [SelfSupervisionCallback()]
 
     @torch.no_grad()
     def update_confidence(self, datamodule: SelfSupervisionDataModule) -> torch.Tensor:

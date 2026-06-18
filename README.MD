@@ -10,7 +10,7 @@ This library is designed to:
 - estimate per-sample **confidence** from that score;
 - analyze score distributions to periodically recalibrate confidence intervals corresponding to normal, abnormal and unknown samples;
 - apply different losses depending on confidence regions, which can take confidence and intervals into account to reweight samples;
-- track experiments, metrics, and artifacts with **MLflow**.
+- track experiments, metrics, and artifacts with **MLflow** and an SQL backend store.
 
 NB: examples are proposed in the [examples folder](examples). They correspond to the implementation of the RADON and GRAnD anomaly detection models.
 
@@ -22,15 +22,30 @@ NB: examples are proposed in the [examples folder](examples). They correspond to
 
 ## Installation
 
-'''
+```
 pip install -e .
-'''
+```
 
 or, to launch examples,
 
-'''
+```
 pip install -e .[dev]
-'''
+```
+
+---
+
+## Visualize results
+Define the tracking URI in the MLflow configuration of the experiment:
+
+```
+tracking_uri=f"sqlite:///<path-to>/mlflow.db",
+```
+
+then start the server to visualize the results and artefacts:
+
+```
+mlflow ui --backend-store-uri sqlite:////<path-to>/mlflow.db
+```
 
 ## High-Level Architecture
 

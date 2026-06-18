@@ -1,9 +1,12 @@
-.micromamba
-.data
 __pycache__/
 .vscode
+.mypy_cache/
+.venv/
+venv/
+.data
+data/
 .ipynb_checkpoints
-.mypy_cache
 *Zone.Identifier
-examples/data/
-.venv
+experiments/
+checkpoints/
+*.egg-info/

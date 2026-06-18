@@ -33,13 +33,21 @@ import ssad
 
 DATASET_NAME = "MNIST"
 MODEL_NAME = "GRAnD"
+
 RUN_NAME = run_name(DATASET_NAME)
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+CKPT_ROOT_DIR = f"{ROOT_DIR}/checkpoints"
+
+# MLflow directories
+MLFLOW_STORE_DIR = f"{ROOT_DIR}/experiments"
+MLFLOW_DB_URI = f"sqlite:///{MLFLOW_STORE_DIR}/mlflow.db"
+
 LOG_LEVEL = "WARNING"  # INFO -- WARNING -- ERROR
 RANDOM_STATE = 42
 ssad.setup_logging(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
+
 
 # cf. ssad.GeneralTabularDatamodule
 #   p_train (float): Proportion of total data for training.
@@ -94,19 +102,30 @@ model = ssad.FreeEnergyScoringModule(
 L.seed_everything(RANDOM_STATE, workers=True)
 
 trainer = L.Trainer(
-    max_epochs=10,
+    max_epochs=100,
     accelerator="auto",
     devices=1,
     precision=16,
+    default_root_dir=CKPT_ROOT_DIR,
     logger=MLFlowLogger(
         experiment_name=MODEL_NAME,
         run_name=RUN_NAME,
         log_model=True,
-        tracking_uri=f"file:{ROOT_DIR}/ml-runs",
+        tracking_uri=MLFLOW_DB_URI,
+        artifact_location=MLFLOW_STORE_DIR
     ),
-    reload_dataloaders_every_n_epochs=1,
+    reload_dataloaders_every_n_epochs=10,
 )
 
-trainer.fit(model=model, datamodule=data)
 
-trainer.test(model=model, datamodule=data)
+def main():
+    trainer.fit(
+        model=model,
+        datamodule=data,
+    )
+
+    trainer.test(model=model, datamodule=data)
+
+
+if __name__ == "__main__":
+    main()
