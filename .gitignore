@@ -10,3 +10,4 @@ data/
 experiments/
 checkpoints/
 *.egg-info/
+dist/
