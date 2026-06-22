@@ -1,16 +1,16 @@
 [project]
 name = "ssad"
-version = "0.1.1"
+version = "0.1.2"
 description = "Framework for self-supervised training of reconstruction-based autoencoder models for anomaly detection."
-readme = "README.md"
+readme = "README_PYPI.md"
 requires-python = ">=3.10,<3.15"
 license = { text = "MIT" }
 authors = [
   { name = "Samuel Berlemont", email = "samuel.berlemont@orange.com" }
 ]
 maintainers = [
-  { name = "Mohammed Achraf El Khamlichi" },
   { name = "Julien Cumin", email = "julien1.cumin@orange.com" },
+  { name = "Mohammed Achraf El Khamlichi" },
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
