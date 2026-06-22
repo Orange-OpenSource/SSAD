@@ -2,11 +2,13 @@
 name = "ssad"
 version = "0.1.0"
 description = "Framework for self-supervised training of reconstruction-based autoencoder models for anomaly detection."
-readme = "README.MD"
+readme = "README.md"
 requires-python = ">=3.10,<3.15"
 license = { text = "MIT" }
 authors = [
-  { name = "Samuel Berlemont", email = "samuel.berlemont@orange.com" },
+  { name = "Samuel Berlemont", email = "samuel.berlemont@orange.com" }
+]
+maintainers = [
   { name = "Mohammed Achraf El Khamlichi" },
   { name = "Julien Cumin", email = "julien1.cumin@orange.com" },
 ]
